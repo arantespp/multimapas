@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/multimapas/static/css/main.3e545749.chunk.css",
-    "main.js": "/multimapas/static/js/main.3a764348.chunk.js",
-    "main.js.map": "/multimapas/static/js/main.3a764348.chunk.js.map",
+    "main.css": "/multimapas/static/css/main.b36d2824.chunk.css",
+    "main.js": "/multimapas/static/js/main.88ee84fa.chunk.js",
+    "main.js.map": "/multimapas/static/js/main.88ee84fa.chunk.js.map",
     "runtime~main.js": "/multimapas/static/js/runtime~main.36f6b9d1.js",
     "runtime~main.js.map": "/multimapas/static/js/runtime~main.36f6b9d1.js.map",
-    "static/js/2.b41502e9.chunk.js": "/multimapas/static/js/2.b41502e9.chunk.js",
-    "static/js/2.b41502e9.chunk.js.map": "/multimapas/static/js/2.b41502e9.chunk.js.map",
+    "static/js/2.66713d47.chunk.js": "/multimapas/static/js/2.66713d47.chunk.js",
+    "static/js/2.66713d47.chunk.js.map": "/multimapas/static/js/2.66713d47.chunk.js.map",
     "index.html": "/multimapas/index.html",
-    "precache-manifest.d9301a7c5af27219950e175102fe9a93.js": "/multimapas/precache-manifest.d9301a7c5af27219950e175102fe9a93.js",
+    "precache-manifest.f51bf93fe8c93043dc68e40c0244c449.js": "/multimapas/precache-manifest.f51bf93fe8c93043dc68e40c0244c449.js",
     "service-worker.js": "/multimapas/service-worker.js",
-    "static/css/main.3e545749.chunk.css.map": "/multimapas/static/css/main.3e545749.chunk.css.map",
-    "static/media/logo.svg": "/multimapas/static/media/logo.5d5d9eef.svg"
+    "static/css/main.b36d2824.chunk.css.map": "/multimapas/static/css/main.b36d2824.chunk.css.map"
   }
 }
