@@ -1,0 +1,17 @@
+@import "bulma/sass/utilities/initial-variables.sass";
+
+$navbar-breakpoint: $tablet;
+$navbar-item-img-max-height: 2.5rem;
+// $navbar-padding-horizontal: 5rem;
+$navbar-padding-vertical: 0.75rem;
+
+$footer-background-color: #eaeaea;
+$footer-padding: 2em;
+
+@import "bulma/bulma.sass";
+
+.App {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
