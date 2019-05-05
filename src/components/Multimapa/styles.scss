@@ -1,4 +1,22 @@
+@import "bulma/bulma.sass";
+
 .Multimapa {
   height: 100%;
   width: 100%;
+
+  .panel:not(:last-child) {
+    margin-bottom: 0px;
+  }
+
+  .columns {
+    height: 100%;
+  }
+}
+
+#maps {
+  height: 100%;
+
+  @include mobile {
+    height: 100vh;
+  }
 }

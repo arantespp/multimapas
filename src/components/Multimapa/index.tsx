@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import XLSX from "xlsx";
 // import utf8 from "utf8";
 
 import GetLatLng from "../GetLatLng";
+import Maps from "../Maps";
+import RowDetails from "../RowDetails";
 
 import "./styles.scss";
 
@@ -30,10 +32,12 @@ const Multimapa: React.FC = () => {
   const [data, setData] = useState<string>(JSON.stringify([]));
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const [fileName, setFileName] = useState("");
-  const [header, setHeader] = useState<string>("");
+  // const [header, setHeader] = useState<string>("");
   const [headers, setHeaders] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [showGetLatLng, setShowGetLatLng] = useState(false);
+  const [activeGetLatLng] = useState(false);
+  const [rowDetails, setRowDetails] = useState<Row | null>(null);
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -41,14 +45,14 @@ const Multimapa: React.FC = () => {
     setIsDropdownActive(false);
   };
 
-  const dropdownOnClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    event.stopPropagation();
-    setIsDropdownActive(!isDropdownActive);
-  };
+  // const dropdownOnClick = (
+  //   event: React.MouseEvent<HTMLDivElement, MouseEvent>
+  // ) => {
+  //   event.stopPropagation();
+  //   setIsDropdownActive(!isDropdownActive);
+  // };
 
-  const dropdownHeaderOnClick = (header: string) => () => setHeader(header);
+  // const dropdownHeaderOnClick = (header: string) => () => setHeader(header);
 
   const openFileOnClick = () => {
     if (fileRef && fileRef.current) {
@@ -85,7 +89,7 @@ const Multimapa: React.FC = () => {
 
       setLoading(true);
 
-      if (!checkIfLatLngExist(json)) {
+      if (!checkIfLatLngExist(json) && activeGetLatLng) {
         setShowGetLatLng(true);
       } else {
         setLoading(false);
@@ -106,6 +110,10 @@ const Multimapa: React.FC = () => {
     XLSX.writeFile(workbook, `${fileName.split(".")[0]}_lat-lng.xlsx`);
   };
 
+  const closeRowDetails = () => {
+    setRowDetails(null);
+  };
+
   return (
     <div className="Multimapa" onClick={multimapaOnClick}>
       <GetLatLng
@@ -116,29 +124,36 @@ const Multimapa: React.FC = () => {
         close={closeGetLatLng}
         downloadData={downloadData}
       />
-      <nav className="panel">
-        <div className="panel-block">
-          <input
-            style={{ display: "none" }}
-            accept=".xlsx, .xls, .csv"
-            type="file"
-            id="fileInput"
-            ref={fileRef}
-            onChange={fileInputOnChange}
-          />
-          <button
-            className={`button is-primary is-fullwidth ${
-              loading ? "is-loading" : ""
-            }`}
-            onClick={openFileOnClick}
-          >
-            Carregar Dados
-          </button>
-        </div>
-        <p className="panel-heading">{`Dados Geolocalizados ${
-          fileName ? "- " + fileName : ""
-        }`}</p>
-        <div className="panel-block">
+      <RowDetails
+        isActive={!!rowDetails}
+        row={rowDetails}
+        close={closeRowDetails}
+      />
+      <div className="columns is-variable is-1-mobile">
+        <nav className="panel column is-narrow is-two-fifths-tablet is-one-quarter-desktop">
+          <p className="panel-heading has-text-centered	">{`Dados Geolocalizados ${
+            fileName ? "- " + fileName : ""
+          }`}</p>
+          <div className="panel-block">
+            <input
+              style={{ display: "none" }}
+              accept=".xlsx, .xls, .csv"
+              type="file"
+              id="fileInput"
+              ref={fileRef}
+              onChange={fileInputOnChange}
+            />
+            <button
+              className={`button is-primary is-fullwidth ${
+                loading ? "is-loading" : ""
+              }`}
+              onClick={openFileOnClick}
+            >
+              Carregar Dados
+            </button>
+          </div>
+
+          {/* <div className="panel-block">
           <p className="control has-icons-left">
             <input
               className="input is-small"
@@ -193,8 +208,12 @@ const Multimapa: React.FC = () => {
               </div>
             </div>
           </div>
+        </div> */}
+        </nav>
+        <div id="maps" className="column">
+          <Maps data={JSON.parse(data)} setRowDetails={setRowDetails} />
         </div>
-      </nav>
+      </div>
     </div>
   );
 };
