@@ -15,10 +15,15 @@
   .checkbox-container {
     margin: 10px;
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    justify-content: flex-start;
 
     input[type="checkbox"] {
-      transform: scale(1.1);
+      transform: scale(1);
+    }
+
+    label {
+      font-size: 14px;
     }
   }
 }

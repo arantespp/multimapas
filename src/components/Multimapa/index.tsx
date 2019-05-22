@@ -176,9 +176,10 @@ const Multimapa: React.FC = () => {
                     src={
                       "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
                     }
-                    height="20px"
+                    height="16px"
                     alt="Azul"
                   />
+                  Notificações Negativas
                 </label>
               </div>
             </div>
@@ -194,9 +195,10 @@ const Multimapa: React.FC = () => {
                     src={
                       "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
                     }
-                    height="20px"
+                    height="16px"
                     alt="Amarelo"
                   />
+                  Notificações Positivas Autóctones
                 </label>
               </div>
             </div>
@@ -212,9 +214,10 @@ const Multimapa: React.FC = () => {
                     src={
                       "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
                     }
-                    height="20px"
+                    height="16px"
                     alt="Verde"
                   />
+                  Notificações Positivas não Autóctones
                 </label>
               </div>
             </div>
