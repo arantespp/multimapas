@@ -11,6 +11,16 @@
   .columns {
     height: 100%;
   }
+
+  .checkbox-container {
+    margin: 10px;
+    display: flex;
+    justify-content: space-around;
+
+    input[type="checkbox"] {
+      transform: scale(1.1);
+    }
+  }
 }
 
 #maps {

@@ -38,6 +38,11 @@ const Multimapa: React.FC = () => {
   const [showGetLatLng, setShowGetLatLng] = useState(false);
   const [activeGetLatLng] = useState(false);
   const [rowDetails, setRowDetails] = useState<Row | null>(null);
+  const [markersColors, setMarkersColors] = useState({
+    green: true,
+    yellow: true,
+    blue: true
+  });
 
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -114,6 +119,12 @@ const Multimapa: React.FC = () => {
     setRowDetails(null);
   };
 
+  const checkboxOnChange = (color: string) => (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setMarkersColors({ ...markersColors, [color]: event.target.checked });
+  };
+
   return (
     <div className="Multimapa" onClick={multimapaOnClick}>
       <GetLatLng
@@ -152,6 +163,66 @@ const Multimapa: React.FC = () => {
               Carregar Dados
             </button>
           </div>
+          <div className="checkbox-container">
+            <div className="field">
+              <div className="control">
+                <label className="checkbox">
+                  <input
+                    defaultChecked={markersColors.blue}
+                    type="checkbox"
+                    onChange={checkboxOnChange("blue")}
+                  />
+                  <img
+                    src={
+                      "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+                    }
+                    height="20px"
+                    alt="Azul"
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="field">
+              <div className="control">
+                <label className="checkbox">
+                  <input
+                    defaultChecked={markersColors.yellow}
+                    type="checkbox"
+                    onChange={checkboxOnChange("yellow")}
+                  />
+                  <img
+                    src={
+                      "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+                    }
+                    height="20px"
+                    alt="Amarelo"
+                  />
+                </label>
+              </div>
+            </div>
+            <div className="field">
+              <div className="control">
+                <label className="checkbox">
+                  <input
+                    defaultChecked={markersColors.green}
+                    type="checkbox"
+                    onChange={checkboxOnChange("green")}
+                  />
+                  <img
+                    src={
+                      "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                    }
+                    height="20px"
+                    alt="Verde"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* const blueMarker = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"; */}
+          {/* const yellowMarker = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+const greenMarker = "https://maps.google.com/mapfiles/ms/icons/green-dot.png"; */}
 
           {/* <div className="panel-block">
           <p className="control has-icons-left">
@@ -211,7 +282,11 @@ const Multimapa: React.FC = () => {
         </div> */}
         </nav>
         <div id="maps" className="column">
-          <Maps data={JSON.parse(data)} setRowDetails={setRowDetails} />
+          <Maps
+            data={JSON.parse(data)}
+            setRowDetails={setRowDetails}
+            markersColors={markersColors}
+          />
         </div>
       </div>
     </div>
