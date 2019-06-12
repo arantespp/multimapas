@@ -32,6 +32,10 @@ interface Props {
   openDataDetailsModal: (data: Data) => void;
 }
 
+const isMarkerClustererScriptLoaded = (): boolean => {
+  return !!(window as any).MarkerClusterer;
+};
+
 const blueMarker = 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 const yellowMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 const greenMarker = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
@@ -159,14 +163,16 @@ const Maps: React.FC<Props> = ({
             </AccordionItemButton>
           </AccordionItemHeading>
           <AccordionItemPanel>
-            <div>
-              <input
-                onChange={showClusterOnChange}
-                type="checkbox"
-                checked={showCluster}
-              />
-              <span>Mostrar Cluster</span>
-            </div>
+            {isMarkerClustererScriptLoaded() ? (
+              <div>
+                <input
+                  onChange={showClusterOnChange}
+                  type="checkbox"
+                  checked={showCluster}
+                />
+                <span>Mostrar Clusters</span>
+              </div>
+            ) : null}
             {filters.map(({ name }) => {
               return (
                 <div key={name}>
@@ -222,7 +228,7 @@ const Maps: React.FC<Props> = ({
               return marker;
             });
 
-            if (!!map && showCluster) {
+            if (!!map && showCluster && isMarkerClustererScriptLoaded()) {
               markerClusterer = new MarkerClusterer(map, markers, {
                 imagePath:
                   'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
