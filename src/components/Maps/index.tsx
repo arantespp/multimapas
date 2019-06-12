@@ -230,8 +230,7 @@ const Maps: React.FC<Props> = ({
 
             if (!!map && showCluster && isMarkerClustererScriptLoaded()) {
               markerClusterer = new MarkerClusterer(map, markers, {
-                imagePath:
-                  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                imagePath: './markerclusterer/m'
               });
             }
           }
