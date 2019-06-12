@@ -1,4 +1,31 @@
-.Map {
-  height: 100%;
-  width: 100%;
+.Maps {
+  position: relative;
+
+  .menu {
+    width: 160px;
+    height: 0px;
+
+    position: relative;
+    top: 10px;
+    left: 10px;
+    z-index: 9;
+
+    .Accordion {
+      background-color: white;
+      -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+      -moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+    }
+
+    .AccordionItemButton {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .map {
+    position: relative;
+    height: 100%;
+    width: 100%;
+  }
 }

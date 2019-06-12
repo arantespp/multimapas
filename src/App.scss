@@ -1,25 +1,27 @@
-@import "bulma/sass/utilities/initial-variables.sass";
+@import './assets/styles/main.scss';
 
-@import "bulma/bulma.sass";
-
-$header-height: 60px;
+$padding-sides: 10px;
 
 .App {
   width: 100%;
   height: 100%;
 
-  @include from($tablet) {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  .header {
+  header {
     background-color: $primary;
-    margin-bottom: 12px;
     height: $header-height;
+
+    display: flex;
+    justify-content: center;
+
+    span {
+      font-size: 30px;
+      font-weight: 1000px;
+      color: #fff;
+    }
   }
 
-  .main {
+  main {
+    width: 100%;
     height: calc(100vh - #{$header-height});
   }
 }

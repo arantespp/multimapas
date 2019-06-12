@@ -1,37 +1,18 @@
-@import "bulma/bulma.sass";
+$padding: 8px;
 
-.Multimapa {
+.LoadData {
   height: 100%;
   width: 100%;
-
-  .panel:not(:last-child) {
-    margin-bottom: 0px;
-  }
-
-  .columns {
-    height: 100%;
-  }
-
-  .checkbox-container {
-    margin: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-
-    input[type="checkbox"] {
-      transform: scale(1);
-    }
-
-    label {
-      font-size: 14px;
-    }
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-#maps {
-  height: 100%;
-
-  @include mobile {
-    height: 100vh;
-  }
+.Multimapa {
+  height: calc(100% - #{2 * $padding});
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: $padding;
+  padding: $padding;
 }

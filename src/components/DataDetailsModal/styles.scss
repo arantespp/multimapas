@@ -1,0 +1,49 @@
+.DataDetailsModal {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 50vw;
+
+  .modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .block {
+    display: flex;
+    flex-direction: column;
+
+    .block-title {
+      font-size: 18px;
+      font-weight: bold;
+      // margin-bottom: 6px;
+    }
+
+    .block-line {
+      margin: 0px 0px 6px 0px;
+      .field {
+        font-size: 13px;
+      }
+      .field-value {
+        margin-left: 10px;
+      }
+    }
+
+    .block-line:nth-child(odd) {
+      background-color: hsl(0, 0, 96%);
+    }
+  }
+
+  .block:not(:last-child) {
+    margin-bottom: 20px;
+  }
+
+  .button {
+    padding: 15px;
+    align-self: flex-end;
+    font-weight: 500;
+    font-size: 16px;
+    text-transform: none;
+  }
+}

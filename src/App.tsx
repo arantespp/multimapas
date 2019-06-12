@@ -1,24 +1,26 @@
-import React from "react";
+import React from 'react';
 
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faAngleDown, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { library } from '@fortawesome/fontawesome-svg-core';
+import {
+  faAngleDown,
+  faBars,
+  faSearch,
+  faTimes
+} from '@fortawesome/free-solid-svg-icons';
 
-import Multimapa from "./components/Multimapa";
+import Multimapa from './components/Multimapa';
 
-import "./App.scss";
+import './App.scss';
 
-library.add(faAngleDown, faSearch);
+library.add(faAngleDown, faBars, faSearch, faTimes);
 
 const App: React.FC = () => {
   return (
     <div className="App">
-      <header
-        className="is-flex header"
-        style={{ justifyContent: "center", alignItems: "center" }}
-      >
-        <h1 className="is-size-3 has-text-weight-normal">Multimapa</h1>
+      <header className="">
+        <span className="">Multimapa App</span>
       </header>
-      <main className="main container is-fullhd">
+      <main className="">
         <Multimapa />
       </main>
     </div>

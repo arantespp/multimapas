@@ -1,297 +1,128 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from 'react';
 
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import XLSX from "xlsx";
-// import utf8 from "utf8";
+import DataDetailsModal from '../DataDetailsModal';
+import LoadData from '../LoadData';
+import Maps from '../Maps';
 
-import GetLatLng from "../GetLatLng";
-import Maps from "../Maps";
-import RowDetails from "../RowDetails";
+import { Data } from '../../interfaces/data';
 
-import "./styles.scss";
-
-interface Row {
-  [key: string]: string | number;
-}
-
-const getHeaders = (json: Row[]): string[] => {
-  const headers: any = json.reduce((acc, row) => {
-    Object.keys(row).forEach(key => (acc[key] = 1));
-    return acc;
-  }, {});
-  return Object.keys(headers);
-};
-
-const checkIfLatLngExist = (json: Row[]): boolean => {
-  return json.reduce<boolean>((acc, row) => {
-    return acc && !!row.latitude && !!row.longitude;
-  }, true);
-};
+import './styles.scss';
 
 const Multimapa: React.FC = () => {
-  const [data, setData] = useState<string>(JSON.stringify([]));
-  const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const [fileName, setFileName] = useState("");
-  // const [header, setHeader] = useState<string>("");
-  const [headers, setHeaders] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [showGetLatLng, setShowGetLatLng] = useState(false);
-  const [activeGetLatLng] = useState(false);
-  const [rowDetails, setRowDetails] = useState<Row | null>(null);
-  const [markersColors, setMarkersColors] = useState({
-    green: true,
-    yellow: true,
-    blue: true
-  });
+  const [data, setData] = useState<Array<Data>>([]);
+  const [dataDetails, setDataDetails] = useState<Data | null>(null);
 
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const multimapaOnClick = () => {
-    setIsDropdownActive(false);
+  const closeDataDetailsModal = () => {
+    setDataDetails(null);
   };
 
-  // const dropdownOnClick = (
-  //   event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  // ) => {
-  //   event.stopPropagation();
-  //   setIsDropdownActive(!isDropdownActive);
-  // };
+  if (data.length === 0) {
+    return (
+      <div className="LoadData">
+        {/* <DataDetailsModal
+          data={{
+            ACIDO_PEPT: '2',
+            ARTRALGIA: '2',
+            ARTRITE: '2',
+            AUTO_IMUNE: '2',
+            CEFALEIA: '1',
+            CLASSI_FIN: '5',
+            CONJUNTVIT: '2',
+            CRITERIO: '1',
+            CS_ESCOL_N: '8',
+            CS_FLXRET: '0',
+            CS_GESTANT: '9',
+            CS_RACA: '9',
+            CS_SEXO: 'F',
+            CS_ZONA: '1',
+            DIABETES: '2',
+            DOR_COSTAS: '2',
+            DOR_RETRO: '2',
+            DT_DIGITA: 43311,
+            DT_ENCERRA: 43294,
+            DT_INVEST: 43276,
+            DT_NOTIFIC: 43276,
+            DT_SIN_PRI: 43269,
+            DT_SORO: 43276,
+            EVOLUCAO: '1',
+            EXANTEMA: '1',
+            FEBRE: '1',
+            HEMATOLOG: '2',
+            HEPATOPAT: '2',
+            HIPERTENSA: '2',
+            HISTOPA_N: '4',
+            HOSPITALIZ: '2',
+            IDENT_MICR: '0000000000004',
+            ID_AGRAVO: 'A90',
+            ID_BAIRRO: '47',
+            ID_MN_RESI: '354890',
+            ID_MUNICIP: '354890',
+            ID_OCUPA_N: '223620',
+            ID_PAIS: '1',
+            ID_REGIONA: '1337',
+            ID_RG_RESI: '1337',
+            ID_UNIDADE: '2083507',
+            IMUNOH_N: '4',
+            LACO: '2',
+            LEUCOPENIA: '2',
+            MIALGIA: '1',
+            NAUSEA: '2',
+            NM_BAIRRO: 'MONTEIRO VL',
+            NM_COMPLEM: 'APTO 203 BL 1',
+            NM_LOGRADO: 'RUA JOSE RODRIGUES SAMPAIO',
+            NU_ANO: '2018',
+            NU_DDD_TEL: '16',
+            NU_IDADE_N: 4031,
+            NU_NOTIFIC: '5709800',
+            NU_NUMERO: '177',
+            NU_TELEFON: '34131868',
+            PETEQUIA_N: '2',
+            RENAL: '2',
+            RESUL_NS1: '4',
+            RESUL_PCR_: '4',
+            RESUL_SORO: '2',
+            RESUL_VI_N: '4',
+            SEM_NOT: '201826',
+            SEM_PRI: '201825',
+            SG_UF: '35',
+            SG_UF_NOT: '35',
+            TP_NOT: '2',
+            TP_SISTEMA: '2',
+            VOMITO: '2',
+            id: 720,
+            latitude: -22.0250896,
+            longitude: -47.888052500000015
+          }}
+          close={closeDataDetailsModal}
+        /> */}
 
-  // const dropdownHeaderOnClick = (header: string) => () => setHeader(header);
-
-  const openFileOnClick = () => {
-    if (fileRef && fileRef.current) {
-      fileRef.current.click();
-    }
-  };
-
-  const fileInputOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (!!!event.target.files) {
-      return;
-    }
-
-    setLoading(true);
-
-    const file = event.target.files[0];
-    setFileName(file.name);
-
-    const reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.onload = () => {
-      const data = reader.result;
-      const workbook = XLSX.read(data, { type: "binary" });
-      const firstSheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[firstSheetName];
-
-      const json: Array<{ [key: string]: any }> = XLSX.utils
-        .sheet_to_json(worksheet)
-        // add id to json if it not exists
-        .map((row, index) => ({ id: index, ...row }));
-
-      setData(JSON.stringify(json));
-
-      setHeaders(getHeaders(json));
-
-      setLoading(true);
-
-      if (!checkIfLatLngExist(json) && activeGetLatLng) {
-        setShowGetLatLng(true);
-      } else {
-        setLoading(false);
-      }
-    };
-  };
-
-  const closeGetLatLng = () => {
-    setShowGetLatLng(false);
-    setLoading(false);
-  };
-
-  const downloadData = () => {
-    const workbook = XLSX.utils.book_new();
-    workbook.SheetNames.push("Dados");
-    const worksheet = XLSX.utils.json_to_sheet(JSON.parse(data));
-    workbook.Sheets["Dados"] = worksheet;
-    XLSX.writeFile(workbook, `${fileName.split(".")[0]}_lat-lng.xlsx`);
-  };
-
-  const closeRowDetails = () => {
-    setRowDetails(null);
-  };
-
-  const checkboxOnChange = (color: string) => (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setMarkersColors({ ...markersColors, [color]: event.target.checked });
-  };
+        <LoadData setData={setData} />
+      </div>
+    );
+  }
 
   return (
-    <div className="Multimapa" onClick={multimapaOnClick}>
-      <GetLatLng
-        isActive={showGetLatLng}
-        data={JSON.parse(data)}
-        headers={headers}
-        setData={setData}
-        close={closeGetLatLng}
-        downloadData={downloadData}
+    <div className="Multimapa">
+      <DataDetailsModal data={dataDetails} close={closeDataDetailsModal} />
+      <Maps data={data} openDataDetailsModal={setDataDetails} />
+      <Maps
+        data={data}
+        showClusterDefault={false}
+        chosenFiltersDefault={['Positivo']}
+        openDataDetailsModal={setDataDetails}
       />
-      <RowDetails
-        isActive={!!rowDetails}
-        row={rowDetails}
-        close={closeRowDetails}
+      <Maps
+        data={data}
+        showClusterDefault={false}
+        chosenFiltersDefault={['Positivo', 'Autóctone']}
+        openDataDetailsModal={setDataDetails}
       />
-      <div className="columns is-variable is-1-mobile">
-        <nav className="panel column is-narrow is-two-fifths-tablet is-one-quarter-desktop">
-          <p className="panel-heading has-text-centered	">{`Dados Geolocalizados ${
-            fileName ? "- " + fileName : ""
-          }`}</p>
-          <div className="panel-block">
-            <input
-              style={{ display: "none" }}
-              accept=".xlsx, .xls, .csv"
-              type="file"
-              id="fileInput"
-              ref={fileRef}
-              onChange={fileInputOnChange}
-            />
-            <button
-              className={`button is-primary is-fullwidth ${
-                loading ? "is-loading" : ""
-              }`}
-              onClick={openFileOnClick}
-            >
-              Carregar Dados
-            </button>
-          </div>
-          <div className="checkbox-container">
-            <div className="field">
-              <div className="control">
-                <label className="checkbox">
-                  <input
-                    defaultChecked={markersColors.blue}
-                    type="checkbox"
-                    onChange={checkboxOnChange("blue")}
-                  />
-                  <img
-                    src={
-                      "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"
-                    }
-                    height="16px"
-                    alt="Azul"
-                  />
-                  Notificações Negativas
-                </label>
-              </div>
-            </div>
-            <div className="field">
-              <div className="control">
-                <label className="checkbox">
-                  <input
-                    defaultChecked={markersColors.yellow}
-                    type="checkbox"
-                    onChange={checkboxOnChange("yellow")}
-                  />
-                  <img
-                    src={
-                      "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
-                    }
-                    height="16px"
-                    alt="Amarelo"
-                  />
-                  Notificações Positivas Autóctones
-                </label>
-              </div>
-            </div>
-            <div className="field">
-              <div className="control">
-                <label className="checkbox">
-                  <input
-                    defaultChecked={markersColors.green}
-                    type="checkbox"
-                    onChange={checkboxOnChange("green")}
-                  />
-                  <img
-                    src={
-                      "https://maps.google.com/mapfiles/ms/icons/green-dot.png"
-                    }
-                    height="16px"
-                    alt="Verde"
-                  />
-                  Notificações Positivas não Autóctones
-                </label>
-              </div>
-            </div>
-          </div>
-
-          {/* const blueMarker = "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"; */}
-          {/* const yellowMarker = "https://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
-const greenMarker = "https://maps.google.com/mapfiles/ms/icons/green-dot.png"; */}
-
-          {/* <div className="panel-block">
-          <p className="control has-icons-left">
-            <input
-              className="input is-small"
-              type="text"
-              placeholder="procurar"
-            />
-            <span className="icon is-small is-left">
-              <FontAwesomeIcon icon="search" />
-            </span>
-          </p>
-        </div>
-        <div className="panel-tabs">
-          <div
-            className={`dropdown ${isDropdownActive ? "is-active" : ""}`}
-            onClick={dropdownOnClick}
-          >
-            <div className="dropdown-trigger">
-              <button
-                className="button"
-                aria-haspopup="true"
-                aria-controls="dropdown-menu"
-              >
-                <span>{`Agrupar por ${header ? ": " + header : ""}`}</span>
-                <span className="icon is-small">
-                  <FontAwesomeIcon icon="angle-down" />
-                </span>
-              </button>
-            </div>
-            <div className="dropdown-menu" id="dropdown-menu" role="menu">
-              <div
-                className="dropdown-content"
-                style={{ height: "300px", overflowY: "scroll" }}
-              >
-                <a
-                  href="#"
-                  className={`dropdown-item ${!!!header ? "is-active" : ""}`}
-                  onClick={dropdownHeaderOnClick("")}
-                >
-                  Nenhum
-                </a>
-                <hr className="dropdown-divider" />
-                {headers.map(header => (
-                  <a
-                    href="#"
-                    key={header}
-                    className="dropdown-item"
-                    onClick={dropdownHeaderOnClick(header)}
-                  >
-                    {header}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div> */}
-        </nav>
-        <div id="maps" className="column">
-          <Maps
-            data={JSON.parse(data)}
-            setRowDetails={setRowDetails}
-            markersColors={markersColors}
-          />
-        </div>
-      </div>
+      <Maps
+        data={data}
+        showClusterDefault={false}
+        chosenFiltersDefault={['Positivo', 'Não Autóctone']}
+        openDataDetailsModal={setDataDetails}
+      />
     </div>
   );
 };
