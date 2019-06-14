@@ -32,6 +32,8 @@ interface Props {
   openDataDetailsModal: (data: Data) => void;
 }
 
+const NUMBER_OF_KMZS = 1261;
+
 const isMarkerClustererScriptLoaded = (): boolean => {
   return !!(window as any).MarkerClusterer;
 };
@@ -120,6 +122,7 @@ const Maps: React.FC<Props> = ({
   const [map, setMap] = useState<google.maps.Map>();
   const [showCluster, setShowCluster] = useState<boolean>(showClusterDefault);
 
+  let kmlLayers: google.maps.KmlLayer[];
   let markers: google.maps.Marker[] = [];
   let markerClusterer: typeof MarkerClusterer;
 
@@ -210,6 +213,19 @@ const Maps: React.FC<Props> = ({
                   zoom: 14
                 })
               );
+            }
+
+            if (!kmlLayers) {
+              kmlLayers = [...Array(10)].map((n, index) => {
+                return new googleMaps.KmlLayer({
+                  map,
+                  preserveViewport: true,
+                  // screenOverlays: false,
+                  // suppressInfoWindows?: boolean;
+                  url: `https://arantespp.github.io/multimapas/KMZs/${100 *
+                    index}.kmz`
+                });
+              });
             }
 
             markers = data.filter(applyFilters(chosenFilters)).map(d => {
