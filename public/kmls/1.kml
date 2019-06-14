@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document id="root_doc">
+<Schema name="1" id="1">
+	<SimpleField name="tessellate" type="int"></SimpleField>
+</Schema>
+<Folder><name>1</name>
+  <Placemark>
+	<name>1</name>
+	<Style><LineStyle><color>ff0000ff</color></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+	<ExtendedData><SchemaData schemaUrl="#1">
+		<SimpleData name="tessellate">1</SimpleData>
+	</SchemaData></ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>-47.9017274591132,-21.9894104330519 -47.9037256000581,-21.9887934826498 -47.9039375916866,-21.9894122431135 -47.9019382835152,-21.9900525286534 -47.9017274591132,-21.9894104330519</coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Folder>
+</Document></kml>
