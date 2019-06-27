@@ -45,9 +45,9 @@ const DataDetailsModal: React.FC<{
       isOpen={!!data}
       ariaHideApp={false}
       style={{
-        overlay: { zIndex: 99 },
+        overlay: { zIndex: 2147483647 },
         content: {
-          zIndex: 99,
+          zIndex: 2147483647,
           maxHeight: '90vh',
           maxWidth: '90vw',
           top: '50%',

@@ -1,0 +1,72 @@
+$bottom: 50px;
+$right: 50px;
+
+$menuSize: 60px;
+
+.Menu {
+  .button {
+    z-index: 1000;
+    background-color: white;
+
+    position: fixed;
+    bottom: $bottom;
+    right: $right;
+
+    width: $menuSize;
+    height: $menuSize;
+
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    -webkit-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.37);
+    -moz-box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.37);
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.37);
+
+    .icon {
+      width: 60%;
+      height: 60%;
+    }
+  }
+
+  .button:hover {
+    -webkit-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.3);
+
+    .icon {
+      width: 70%;
+      height: 70%;
+    }
+  }
+}
+
+.Modal {
+  position: fixed;
+  bottom: $bottom + $menuSize;
+  right: $right + $menuSize;
+
+  background-color: white;
+
+  min-width: 100px;
+  min-height: 100px;
+
+  padding: 20px;
+
+  -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.37);
+  -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.37);
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.37);
+
+  // transform: translate(-100%, -100%);
+}
+
+// .Overlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   background-color: rebeccapurple;
+// }

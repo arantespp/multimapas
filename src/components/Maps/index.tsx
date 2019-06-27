@@ -10,6 +10,8 @@ import {
 } from 'react-accessible-accordion';
 import ReactGoogleMapLoader from 'react-google-maps-loader';
 
+import { applyFilters, filters } from './filters';
+
 import { key } from '../../key';
 
 import { Data } from '../../interfaces/data';
@@ -18,18 +20,13 @@ import './styles.scss';
 
 declare var MarkerClusterer: any;
 
-type FilterNames = 'Positivo' | 'Autóctone' | 'Não Autóctone';
-
-interface Filter {
-  name: FilterNames;
-  filter: (data: Data, index: number) => boolean;
-}
-
 interface Props {
-  chosenFiltersDefault?: FilterNames[];
+  chosenFiltersDefault?: string[];
   showClusterDefault?: boolean;
   data: Data[];
   openDataDetailsModal: (data: Data) => void;
+  height: number;
+  width: number;
 }
 
 const NUMBER_OF_KMZS = 1261;
@@ -43,10 +40,10 @@ const yellowMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 const greenMarker = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
 
 const markerColor = (data: Data) => {
-  if (!filterIsPositive.filter(data, 0)) {
+  if (!filters.isPositive.filter(data, 0)) {
     return blueMarker;
   } else {
-    if (filterIsAutoctone.filter(data, 0)) {
+    if (filters.isAutoctone.filter(data, 0)) {
       return yellowMarker;
     } else {
       return greenMarker;
@@ -54,75 +51,22 @@ const markerColor = (data: Data) => {
   }
 };
 
-const filterIsPositive: Filter = {
-  name: 'Positivo',
-  filter: (data, index) => {
-    const cols = [
-      'RESUL_PRNT',
-      'RESUL_SORO',
-      'RESUL_NS1',
-      'RESUL_VI_N',
-      'RESUL_PCR_',
-      'HISTOPA_N',
-      'IMUNOH_N'
-    ].map(value => {
-      return Number(data[value as keyof Data]) === 1;
-    });
-    const res = cols.reduce((acc, cur) => acc || cur, false);
-    return res;
-  }
-};
-
-const filterIsAutoctone: Filter = {
-  name: 'Autóctone',
-  filter: (data, index) => {
-    return Number(data['TPAUTOCTO']) === 1;
-  }
-};
-
-const filterIsNotAutoctone: Filter = {
-  name: 'Não Autóctone',
-  filter: (data, index) => {
-    return Number(data['TPAUTOCTO']) !== 1;
-  }
-};
-
-const filters: Filter[] = [
-  filterIsPositive,
-  filterIsAutoctone,
-  filterIsNotAutoctone
-];
-
-const applyFilters = (filtersNameToBeApplied: FilterNames[]) => (
-  data: Data,
-  index: number
-): boolean => {
-  const filtersToBeApplied: Filter[] = filters.filter(({ name }) => {
-    const existsFiltersNameToBeApplied = filtersNameToBeApplied.find(
-      filtersNameToBeAppliedName => filtersNameToBeAppliedName === name
-    );
-    return !!existsFiltersNameToBeApplied;
-  });
-
-  return filtersToBeApplied.reduce<boolean>((acc, { filter }) => {
-    return acc && filter(data, index);
-  }, true);
-};
-
 const Maps: React.FC<Props> = ({
   chosenFiltersDefault = [],
   data,
   showClusterDefault = true,
-  openDataDetailsModal
+  openDataDetailsModal,
+  height,
+  width
 }) => {
   const mapRef = useRef(null);
-  const [chosenFilters, setChosenFilters] = useState<FilterNames[]>(
+  const [chosenFilters, setChosenFilters] = useState<string[]>(
     chosenFiltersDefault
   );
   const [map, setMap] = useState<google.maps.Map>();
   const [showCluster, setShowCluster] = useState<boolean>(showClusterDefault);
 
-  let kmlLayers: google.maps.KmlLayer[];
+  let kmlLayer: google.maps.KmlLayer;
   let markers: google.maps.Marker[] = [];
   let markerClusterer: typeof MarkerClusterer;
 
@@ -139,7 +83,7 @@ const Maps: React.FC<Props> = ({
     setShowCluster(!showCluster);
   };
 
-  const filterOnChange = (filterName: FilterNames) => () => {
+  const filterOnChange = (filterName: string) => () => {
     setChosenFilters(cf => {
       const filterExists = !!cf.find(filter => filter === filterName);
       return filterExists
@@ -176,7 +120,7 @@ const Maps: React.FC<Props> = ({
                 <span>Mostrar Clusters</span>
               </div>
             ) : null}
-            {filters.map(({ name }) => {
+            {Object.values(filters).map(({ name }) => {
               return (
                 <div key={name}>
                   <input
@@ -215,16 +159,13 @@ const Maps: React.FC<Props> = ({
               );
             }
 
-            if (!kmlLayers) {
-              kmlLayers = [...Array(10)].map((n, index) => {
-                return new googleMaps.KmlLayer({
-                  map,
-                  preserveViewport: true,
-                  // screenOverlays: false,
-                  // suppressInfoWindows?: boolean;
-                  url: `https://arantespp.github.io/multimapas/KMZs/${100 *
-                    index}.kmz`
-                });
+            if (!kmlLayer) {
+              kmlLayer = new googleMaps.KmlLayer({
+                map,
+                preserveViewport: true,
+                // screenOverlays: false,
+                // suppressInfoWindows?: boolean;
+                url: `https://arantespp.github.io/multimapas/KMZs/sao-carlos.kmz`
               });
             }
 
@@ -251,7 +192,7 @@ const Maps: React.FC<Props> = ({
             }
           }
 
-          return <div className="map" ref={mapRef} />;
+          return <div className="map" style={{ width, height }} ref={mapRef} />;
         }}
       />
     </div>

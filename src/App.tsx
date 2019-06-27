@@ -4,6 +4,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faAngleDown,
   faBars,
+  faCogs,
   faSearch,
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
@@ -12,7 +13,7 @@ import Multimapa from './components/Multimapa';
 
 import './App.scss';
 
-library.add(faAngleDown, faBars, faSearch, faTimes);
+library.add(faAngleDown, faBars, faCogs, faSearch, faTimes);
 
 const App: React.FC = () => {
   return (

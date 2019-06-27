@@ -9,10 +9,10 @@ $padding: 8px;
 }
 
 .Multimapa {
-  height: calc(100% - #{2 * $padding});
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  grid-gap: $padding;
-  padding: $padding;
+  // padding: $padding;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
