@@ -80,4 +80,5 @@ export interface LoadedData {
 
 export interface Data extends LoadedData {
   id: number;
+  block?: string;
 }

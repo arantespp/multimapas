@@ -15,7 +15,7 @@ interface Block {
 const blocks: Block[] = [
   {
     blockName: 'Localização',
-    fields: ['NM_LOGRADO', 'NU_NUMERO', 'NM_COMPLEM', 'NM_BAIRRO']
+    fields: ['block', 'NM_LOGRADO', 'NU_NUMERO', 'NM_COMPLEM', 'NM_BAIRRO']
   },
   {
     blockName: 'Paciente',

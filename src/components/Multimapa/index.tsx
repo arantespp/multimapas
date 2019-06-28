@@ -12,7 +12,7 @@ import './styles.scss';
 const Multimapa: React.FC = () => {
   const [data, setData] = useState<Array<Data>>([]);
   const [dataDetails, setDataDetails] = useState<Data | null>(null);
-  const [numberOfMaps, setNumberOfMaps] = useState(2);
+  const [numberOfMaps, setNumberOfMaps] = useState(1);
   const [mapsHeight, setMapsHeight] = useState(700);
   const [mapsWidth, setMapsWidth] = useState(500);
 

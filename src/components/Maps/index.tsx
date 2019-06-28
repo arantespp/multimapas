@@ -11,6 +11,7 @@ import {
 import ReactGoogleMapLoader from 'react-google-maps-loader';
 
 import { applyFilters, filters } from './filters';
+import { polygonsData } from './polygons-data';
 
 import { key } from '../../key';
 
@@ -28,8 +29,6 @@ interface Props {
   height: number;
   width: number;
 }
-
-const NUMBER_OF_KMZS = 1261;
 
 const isMarkerClustererScriptLoaded = (): boolean => {
   return !!(window as any).MarkerClusterer;
@@ -66,9 +65,9 @@ const Maps: React.FC<Props> = ({
   const [map, setMap] = useState<google.maps.Map>();
   const [showCluster, setShowCluster] = useState<boolean>(showClusterDefault);
 
-  let kmlLayer: google.maps.KmlLayer;
   let markers: google.maps.Marker[] = [];
   let markerClusterer: typeof MarkerClusterer;
+  let polygons: Array<{ polygon: google.maps.Polygon; id: string }>;
 
   useEffect(() => {
     return () => {
@@ -153,19 +152,44 @@ const Maps: React.FC<Props> = ({
               setMap(
                 new googleMaps.Map(mapRef.current, {
                   center: { lat: -22.0087, lng: -47.8909 },
+                  disableDoubleClickZoom: true,
                   mapTypeControl: false,
                   zoom: 14
                 })
               );
             }
 
-            if (!kmlLayer) {
-              kmlLayer = new googleMaps.KmlLayer({
-                map,
-                preserveViewport: true,
-                // screenOverlays: false,
-                // suppressInfoWindows?: boolean;
-                url: `https://arantespp.github.io/multimapas/KMZs/sao-carlos.kmz`
+            // if (!kmlLayer) {
+            //   kmlLayer = new googleMaps.KmlLayer({
+            //     map,
+            //     preserveViewport: true,
+            //     // screenOverlays: false,
+            //     // suppressInfoWindows?: boolean;
+            //     url: `https://arantespp.github.io/multimapas/KMZs/sao-carlos.kmz`
+            //   });
+            // }
+
+            const infoWindow = new googleMaps.InfoWindow();
+
+            if (!polygons) {
+              polygons = polygonsData.map(({ id, paths }) => {
+                const polygon = new googleMaps.Polygon({
+                  map,
+                  paths,
+                  strokeColor: '#FF0000',
+                  strokeOpacity: 0.5,
+                  strokeWeight: 1,
+                  fillColor: '#FF0000',
+                  fillOpacity: 0.05,
+                  clickable: true
+                });
+                polygon.addListener('click', e => {
+                  const latLng = e.latLng;
+                  infoWindow.setContent(id);
+                  infoWindow.setPosition(latLng);
+                  infoWindow.open(map);
+                });
+                return { id, polygon };
               });
             }
 
@@ -179,8 +203,21 @@ const Maps: React.FC<Props> = ({
                 map,
                 icon: markerColor(d)
               });
-              marker.addListener('dblclick', e => {
-                openDataDetailsModal(d);
+              marker.addListener('click', e => {
+                let block = '???';
+                if (polygons) {
+                  polygons.forEach(({ id, polygon }) => {
+                    if (
+                      googleMaps.geometry.poly.containsLocation(
+                        e.latLng,
+                        polygon
+                      )
+                    ) {
+                      block = id;
+                    }
+                  });
+                }
+                openDataDetailsModal({ ...d, block });
               });
               return marker;
             });
