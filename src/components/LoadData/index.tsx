@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 
 import XLSX from 'xlsx';
+import moment from 'moment';
 
 import { Data, LoadedData } from '../../interfaces/data';
 
@@ -10,8 +11,17 @@ interface Props {
   setData: React.Dispatch<React.SetStateAction<Array<Data>>>;
 }
 
+const serialDataToMoment = (serial: number) =>
+  moment(Math.round((serial - 25569) * 86400 * 1000));
+
 const transformData = (data: LoadedData, id: number): Data => {
-  return { ...data, id };
+  let newData: Data = { ...data, id };
+
+  if (data.DT_NOTIFIC) {
+    newData.dtNotific = serialDataToMoment(data.DT_NOTIFIC);
+  }
+
+  return newData;
 };
 
 const LoadData: React.FC<Props> = ({ setData }) => {

@@ -1,3 +1,5 @@
+import { Moment } from 'moment';
+
 export interface LoadedData {
   ACIDO_PEPT?: string;
   ARTRALGIA?: string;
@@ -79,6 +81,7 @@ export interface LoadedData {
 }
 
 export interface Data extends LoadedData {
+  dtNotific?: Moment;
   id: number;
   block?: string;
 }
