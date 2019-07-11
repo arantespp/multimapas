@@ -64,3 +64,6 @@ export const applyFilters = (filtersNameToBeApplied: string[]) => (
     return acc && filter(data, index);
   }, true);
 };
+
+
+

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, SyntheticEvent } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,6 +18,8 @@ import { key } from '../../key';
 import { Data } from '../../interfaces/data';
 
 import './styles.scss';
+import SearchDateForm from '../SearchDateForm';
+
 
 declare var MarkerClusterer: any;
 
@@ -133,6 +135,9 @@ const Maps: React.FC<Props> = ({
                 </div>
               );
             })}
+            {
+              <SearchDateForm data = {data}/>
+            }
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
