@@ -12,7 +12,7 @@ interface Props {
 }
 
 const serialDataToMoment = (serial: number) =>
-  moment(Math.round((serial - 25569) * 86400 * 1000));
+  moment(Math.round((serial - 25569) * 86400 * 1000)).add(1,'day');
 
 const transformData = (data: LoadedData, id: number): Data => {
   let newData: Data = { ...data, id };

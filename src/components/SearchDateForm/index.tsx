@@ -22,20 +22,25 @@ export default class SearchDateForm extends Component<Props> {
 
     searchDate(event: SyntheticEvent) {
         event.preventDefault();
-        console.log("Chmando o formulario de data");
-        /* Teste: NU_NOTIFIC: 5409674	DT_NOTIFIC: 06/11/2018 - 43410 */
-
+                
         if (this.initialDateRef && this.initialDateRef.current &&
             this.finalDateRef && this.finalDateRef.current) {
-
-            let finalDate, initialDate = moment(this.initialDateRef.current.value).format('L');
-
-            if (this.finalDateRef.current.value !== '')
-                finalDate = moment(this.finalDateRef.current.value).locale('pt-BR').format('L');
             
-            console.log(this.props)
+            const initialDate = moment(this.initialDateRef.current.value);
+            let dataFound;
 
-            /*console.log(this.props.data[0].DT_NOTIFIC);*/
+            if (this.finalDateRef.current.value) {
+                const finalDate = moment(this.finalDateRef.current.value);
+                finalDate.add(1,'day'); //??????               
+                
+                dataFound = this.props.data.filter(data => data.dtNotific && data.dtNotific.isBetween(initialDate, finalDate, undefined, "[]"));
+
+            } else {
+                dataFound = this.props.data.filter(data => data.dtNotific && data.dtNotific.isSameOrAfter(initialDate));                
+            }
+
+            this.setState({data:dataFound});
+                                   
             this.resetInputs();
         }
     }
@@ -53,11 +58,11 @@ export default class SearchDateForm extends Component<Props> {
                 <form className="search-date" onSubmit={this.searchDate.bind(this)}>
                     <label>
                         Inicial:
-                        <input type="date" required ref={this.initialDateRef} />
+                        <input type="date" required ref={this.initialDateRef} max="2018-12-31" min="2018-01-01"/>
                     </label>
                     <label>
                         Final:
-                        <input type="date" ref={this.finalDateRef} />
+                        <input type="date" ref={this.finalDateRef} max="2018-12-31" min="2018-01-01" />
                     </label>
                     <input type="submit" value="Pesquisar" className="search-submit-button" />
                 </form>

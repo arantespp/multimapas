@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, SyntheticEvent } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -136,7 +136,7 @@ const Maps: React.FC<Props> = ({
               );
             })}
             {
-              <SearchDateForm data = {data}/>
+              <SearchDateForm data = {data} />
             }
           </AccordionItemPanel>
         </AccordionItem>
