@@ -18,7 +18,9 @@ import { key } from '../../key';
 import { Data } from '../../interfaces/data';
 
 import './styles.scss';
-import SearchDateForm from '../SearchDateForm';
+
+import moment from 'moment';
+import 'moment/locale/pt-br';
 
 
 declare var MarkerClusterer: any;
@@ -64,6 +66,11 @@ const Maps: React.FC<Props> = ({
   const [chosenFilters, setChosenFilters] = useState<string[]>(
     chosenFiltersDefault
   );
+
+  const [initialDate, setInitialDate]  = useState();
+  const [finalDate, setFinalDate]  = useState();
+  
+  
   const [map, setMap] = useState<google.maps.Map>();
   const [showCluster, setShowCluster] = useState<boolean>(showClusterDefault);
 
@@ -96,6 +103,35 @@ const Maps: React.FC<Props> = ({
   const filterMenuIsChecked = (filter: string): boolean => {
     return !!chosenFilters.find(filterName => filter === filterName);
   };
+
+  const filterInitialDate = (date:string) => {
+    setInitialDate(date);
+  };
+
+  const filterFinalDate = (date:string) => {
+    setFinalDate(date);
+  };
+  
+  const datesFiltered = (): Array<Data> => {
+    
+    if (initialDate) {
+      if(finalDate) {
+
+        let initial = moment(initialDate);
+        let final = moment(finalDate);
+
+        if (initial.isAfter(final)) {
+          return data.filter(data => data.dtNotific && data.dtNotific.isBetween(final, initial.add(1,'day'), undefined, "[]"));;
+        } 
+        
+        return data.filter(data => data.dtNotific && data.dtNotific.isBetween(initial, final.add(1,'day'), undefined, "[]"));
+      } 
+            
+      return data.filter(data => data.dtNotific && data.dtNotific.isSameOrAfter(moment(initialDate)));;
+    }
+    
+    return data;
+  }
 
   const Menu = () => {
     return (
@@ -136,7 +172,22 @@ const Maps: React.FC<Props> = ({
               );
             })}
             {
-              <SearchDateForm data = {data} />
+              <div className="search-date">
+                <label>
+                  Inicial:
+                  <input 
+                    type="date" max="2018-12-31" min="2018-01-01" 
+                    onChange = {e => filterInitialDate(e.target.value)}
+                    value = {initialDate}/>
+                </label>
+                <label>
+                  Final:
+                  <input 
+                    type="date" max="2018-12-31" min="2018-01-01" 
+                    onChange = {e => filterFinalDate(e.target.value)}
+                    value = {finalDate}/>
+                </label>
+              </div>
             }
           </AccordionItemPanel>
         </AccordionItem>
@@ -197,35 +248,36 @@ const Maps: React.FC<Props> = ({
                 return { id, polygon };
               });
             }
-
-            markers = data.filter(applyFilters(chosenFilters)).map(d => {
-              const position = new googleMaps.LatLng(
-                Number(d.latitude),
-                Number(d.longitude)
-              );
-              const marker = new googleMaps.Marker({
-                position,
-                map,
-                icon: markerColor(d)
+            markers = datesFiltered()
+              .filter(applyFilters(chosenFilters))
+              .map(d => {
+                const position = new googleMaps.LatLng(
+                  Number(d.latitude),
+                  Number(d.longitude)
+                );
+                const marker = new googleMaps.Marker({
+                  position,
+                  map,
+                  icon: markerColor(d)
+                });
+                marker.addListener('click', e => {
+                  let block = '???';
+                  if (polygons) {
+                    polygons.forEach(({ id, polygon }) => {
+                      if (
+                        googleMaps.geometry.poly.containsLocation(
+                          e.latLng,
+                          polygon
+                        )
+                      ) {
+                        block = id;
+                      }
+                    });
+                  }
+                  openDataDetailsModal({ ...d, block });
+                });
+                return marker;
               });
-              marker.addListener('click', e => {
-                let block = '???';
-                if (polygons) {
-                  polygons.forEach(({ id, polygon }) => {
-                    if (
-                      googleMaps.geometry.poly.containsLocation(
-                        e.latLng,
-                        polygon
-                      )
-                    ) {
-                      block = id;
-                    }
-                  });
-                }
-                openDataDetailsModal({ ...d, block });
-              });
-              return marker;
-            });
 
             if (!!map && showCluster && isMarkerClustererScriptLoaded()) {
               markerClusterer = new MarkerClusterer(map, markers, {
