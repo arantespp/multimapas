@@ -176,14 +176,14 @@ const Maps: React.FC<Props> = ({
                 <label>
                   Inicial:
                   <input 
-                    type="date" max="2018-12-31" min="2018-01-01" 
+                    type="date" 
                     onChange = {e => filterInitialDate(e.target.value)}
                     value = {initialDate}/>
                 </label>
                 <label>
                   Final:
                   <input 
-                    type="date" max="2018-12-31" min="2018-01-01" 
+                    type="date" 
                     onChange = {e => filterFinalDate(e.target.value)}
                     value = {finalDate}/>
                 </label>
