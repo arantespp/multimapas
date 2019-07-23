@@ -31,23 +31,6 @@
     margin: 6px 3px;
   }
 
-  .search-submit-button {
-    border: 0;
-    background: url(../../assets/imgs/busca-icone.png) center center no-repeat #007bff;
-    text-indent: -9999px;
-    overflow: hidden;
-    background-size: 20px;
-    color: #fff;
-    min-width: 32px;
-    height: 2.4em;
-    transition: .4s;
-    margin: 0 3px 3px 0;
-  }
-
-  .search-submit-button:hover {
-    background-color: #5ad4c9;
-  }
-
   .search-date label input {
     background: #fafafa;
     border: 1px solid #dbdbdb;
