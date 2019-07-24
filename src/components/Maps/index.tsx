@@ -160,9 +160,11 @@ const Maps: React.FC<Props> = ({
     }
 
     if (initialMonth) {
-      const dataMonthEpiFiltered = data.filter(data => data.dtNotific && data.dtNotific.month() == initialMonth);
-
-      return dataMonthEpiFiltered;
+      if(finalMonth) {
+        return data.filter(data => data.dtNotific && (data.dtNotific.month() == initialMonth || data.dtNotific.month() == finalMonth));
+      }
+      
+      return data.filter(data => data.dtNotific && data.dtNotific.month() == initialMonth);
     }
 
     if (initialEpiWeek) {
@@ -254,7 +256,7 @@ const Maps: React.FC<Props> = ({
                 <label>
                   Inicial:
                   <select value={initialMonth} onChange={e => setIinitialMonth(e.target.value)}>
-                    <option selected >Escolha o mês</option>
+                    <option>Escolha o mês</option>
                     {
                       months.map(month => {return (
                         <option key={month.value} value={month.value}>{month.label}</option>
@@ -265,7 +267,7 @@ const Maps: React.FC<Props> = ({
                 <label>
                   Final:
                   <select value={finalMonth} onChange={e => setFinalMonth(e.target.value)}>
-                    <option selected >Escolha o mês</option>
+                    <option>Escolha o mês</option>
                     {
                       months.map(month => {return (
                         <option key={month.value} value={month.value}>{month.label}</option>
@@ -281,7 +283,7 @@ const Maps: React.FC<Props> = ({
                   Inicial:
                   <select value={initialEpiWeek} 
                     onChange = {e => setInitialEpiWeek(e.target.value)}>
-                    <option selected>Semana Inicial</option> 
+                    <option>Semana Inicial</option> 
                     {
                       epidemiologicalWeeksForTest.map((semana) => {
                         return <option 
@@ -297,7 +299,7 @@ const Maps: React.FC<Props> = ({
                   Final:
                   <select value={finalEpiWeek} 
                     onChange = {e => setFinalEpiWeek(e.target.value)}>
-                    <option selected>Semana Final</option> 
+                    <option>Semana Final</option> 
                     {
                       epidemiologicalWeeksFinal.map((semana) => {
                         return <option 
@@ -348,8 +350,6 @@ const Maps: React.FC<Props> = ({
             // }
 
             const infoWindow = new googleMaps.InfoWindow();
-
-            console.log(polygons)
 
             if (!polygons) {
               polygons = polygonsData.map(({ id, paths }) => {
