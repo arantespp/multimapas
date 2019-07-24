@@ -22,6 +22,9 @@ import './styles.scss';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 
+import { months, epidemiologicalWeeksForTest } from '../../utils';
+
+
 
 declare var MarkerClusterer: any;
 
@@ -66,11 +69,7 @@ const Maps: React.FC<Props> = ({
   const [chosenFilters, setChosenFilters] = useState<string[]>(
     chosenFiltersDefault
   );
-
-  const [initialDate, setInitialDate]  = useState();
-  const [finalDate, setFinalDate]  = useState();
-  
-  
+   
   const [map, setMap] = useState<google.maps.Map>();
   const [showCluster, setShowCluster] = useState<boolean>(showClusterDefault);
 
@@ -103,35 +102,96 @@ const Maps: React.FC<Props> = ({
   const filterMenuIsChecked = (filter: string): boolean => {
     return !!chosenFilters.find(filterName => filter === filterName);
   };
-
-  const filterInitialDate = (date:string) => {
-    setInitialDate(date);
-  };
-
-  const filterFinalDate = (date:string) => {
-    setFinalDate(date);
-  };
   
-  const datesFiltered = (): Array<Data> => {
+  //Estados dos inputs de datas.
+  const [initialDateInput, setInitialDateInput]  = useState();
+  const [finalDateInput, setFinalDateInput]  = useState();
+
+  //Estados dos selects dos meses.
+  const [initialMonth, setIinitialMonth] = useState();
+  const [finalMonth, setFinalMonth] = useState();
+
+  //Estados das selects das semanas epidemiologicas
+  const [initialEpiWeek, setInitialEpiWeek]  = useState();
+  const [finalEpiWeek, setFinalEpiWeek]  = useState();
+  const [epidemiologicalWeeksFinal, setEpidemiologicalWeeksFinal] = useState(epidemiologicalWeeksForTest);
+
+  useEffect(() => {
+    setIinitialMonth(undefined);
+    setFinalMonth(undefined);
+    setInitialEpiWeek(undefined);
+    setFinalEpiWeek(undefined);
     
-    if (initialDate) {
-      if(finalDate) {
+  }, [initialDateInput]);
 
-        let initial = moment(initialDate);
-        let final = moment(finalDate);
+  useEffect(() => {
+    setInitialDateInput(undefined);
+    setFinalDateInput(undefined);
+    setInitialEpiWeek(undefined);
+    setFinalEpiWeek(undefined);
 
-        if (initial.isAfter(final)) {
-          return data.filter(data => data.dtNotific && data.dtNotific.isBetween(final, initial.add(1,'day'), undefined, "[]"));;
+  }, [initialMonth]);
+
+  useEffect(() => {
+    setInitialDateInput(undefined);
+    setFinalDateInput(undefined);
+    setIinitialMonth(undefined);
+    setFinalMonth(undefined);
+    
+    const newEpiWeeksFinal = epidemiologicalWeeksForTest.filter(week => week.numero > initialEpiWeek);
+    setEpidemiologicalWeeksFinal(newEpiWeeksFinal);
+    
+  }, [initialEpiWeek]);
+
+  /* Metodo utilizado para realizar a logica do filtro envolvendo datas. */
+  const datesFiltered = (): Array<Data> => {
+    if (initialDateInput) {
+      if(finalDateInput) {
+        const initialDate = moment(initialDateInput), finalDate = moment(finalDateInput);
+
+        if (initialDate.isAfter(finalDate)) {
+          return data.filter(data => data.dtNotific && data.dtNotific.isBetween(finalDate, initialDate.add(1,'day'), undefined, "[]"));
         } 
         
-        return data.filter(data => data.dtNotific && data.dtNotific.isBetween(initial, final.add(1,'day'), undefined, "[]"));
+        return data.filter(data => data.dtNotific && data.dtNotific.isBetween(initialDate, finalDate.add(1,'day'), undefined, "[]"));
       } 
+      
+      return data.filter(data => data.dtNotific && data.dtNotific.isSameOrAfter(moment(initialDateInput)));
+    }
+
+    if (initialMonth) {
+      const dataMonthEpiFiltered = data.filter(data => data.dtNotific && data.dtNotific.month() == initialMonth);
+
+      return dataMonthEpiFiltered;
+    }
+
+    if (initialEpiWeek) {
+      
+      const epiWeekInitialYear = initialEpiWeek == 1 ? '2017' : '2018';
+      const epiWeekFinalYear = '2018';
+
+      const dateInfoInitialEpiWeek = epidemiologicalWeeksForTest.find((week) => {
+        return week.numero == initialEpiWeek
+      });
+
+      const initialDate = `${epiWeekInitialYear}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.inicio.mes}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.inicio.dia}`;
+      let finalDate = `${epiWeekFinalYear}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.final.mes}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.final.dia}`;
+      
+      if (finalEpiWeek) {
+        const dateInfoFinalEpiWeek = epidemiologicalWeeksForTest.find((week) => {
+          return week.numero == finalEpiWeek
+        });
+        
+        finalDate = `${epiWeekFinalYear}-${dateInfoFinalEpiWeek && dateInfoFinalEpiWeek.final.mes}-${dateInfoFinalEpiWeek && dateInfoFinalEpiWeek.final.dia}`;
+      }
             
-      return data.filter(data => data.dtNotific && data.dtNotific.isSameOrAfter(moment(initialDate)));;
+      const dataEpiWeekFiltered = data.filter(data => data.dtNotific && data.dtNotific.isBetween(initialDate, finalDate, undefined, "[]"));
+
+      return dataEpiWeekFiltered;
     }
     
     return data;
-  }
+  };
 
   const Menu = () => {
     return (
@@ -172,20 +232,82 @@ const Maps: React.FC<Props> = ({
               );
             })}
             {
-              <div className="search-date">
+              <div className="search-inputs">
                 <label>
                   Inicial:
                   <input 
                     type="date" 
-                    onChange = {e => filterInitialDate(e.target.value)}
-                    value = {initialDate}/>
+                    onChange = {e => setInitialDateInput(e.target.value)}
+                    value = {initialDateInput}/>
                 </label>
                 <label>
                   Final:
                   <input 
-                    type="date" 
-                    onChange = {e => filterFinalDate(e.target.value)}
-                    value = {finalDate}/>
+                    type="date"
+                    onChange = {e => setFinalDateInput(e.target.value)}
+                    value = {finalDateInput}/>
+                </label>
+              </div>
+            }
+            {
+              <div className="search-inputs">
+                <label>
+                  Inicial:
+                  <select value={initialMonth} onChange={e => setIinitialMonth(e.target.value)}>
+                    <option selected >Escolha o mês</option>
+                    {
+                      months.map(month => {return (
+                        <option key={month.value} value={month.value}>{month.label}</option>
+                      )})
+                    }
+                  </select>
+                </label>
+                <label>
+                  Final:
+                  <select value={finalMonth} onChange={e => setFinalMonth(e.target.value)}>
+                    <option selected >Escolha o mês</option>
+                    {
+                      months.map(month => {return (
+                        <option key={month.value} value={month.value}>{month.label}</option>
+                      )})
+                    }
+                  </select>
+                </label>
+              </div>
+            }
+            {
+              <div className="search-inputs">
+                <label>
+                  Inicial:
+                  <select value={initialEpiWeek} 
+                    onChange = {e => setInitialEpiWeek(e.target.value)}>
+                    <option selected>Semana Inicial</option> 
+                    {
+                      epidemiologicalWeeksForTest.map((semana) => {
+                        return <option 
+                            key = {`semana-inicial-${semana.numero}`} 
+                            value ={semana.numero}>
+                              {semana.numero}
+                          </option>
+                      })
+                    }
+                  </select>
+                </label>
+                <label>
+                  Final:
+                  <select value={finalEpiWeek} 
+                    onChange = {e => setFinalEpiWeek(e.target.value)}>
+                    <option selected>Semana Final</option> 
+                    {
+                      epidemiologicalWeeksFinal.map((semana) => {
+                        return <option 
+                            key={`semana-final-${semana.numero}`} 
+                            value={semana.numero}>
+                              {semana.numero}
+                          </option>
+                      })
+                    }
+                  </select>
                 </label>
               </div>
             }
@@ -227,6 +349,8 @@ const Maps: React.FC<Props> = ({
 
             const infoWindow = new googleMaps.InfoWindow();
 
+            console.log(polygons)
+
             if (!polygons) {
               polygons = polygonsData.map(({ id, paths }) => {
                 const polygon = new googleMaps.Polygon({
@@ -248,6 +372,7 @@ const Maps: React.FC<Props> = ({
                 return { id, polygon };
               });
             }
+            
             markers = datesFiltered()
               .filter(applyFilters(chosenFilters))
               .map(d => {

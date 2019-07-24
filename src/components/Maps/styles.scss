@@ -31,16 +31,25 @@
     margin: 6px 3px;
   }
 
-  .search-date label input {
+  .search-inputs label { 
+    margin: 0 3px 0;
+  }
+  
+  .search-inputs label input {
     background: #fafafa;
     border: 1px solid #dbdbdb;
     border-radius: 5px;
-    width: 132px;
-    margin: 2px;
+    width: 130px;
+    margin: 5px;
   }
 
-  .search-date label { 
-    margin: 3px;
-  }
+  .search-inputs label select {
+    background: #fafafa;
+    border: 1px solid #dbdbdb;
+    border-radius: 2px;
+    width: 132px;
+    margin: 5px;
+    min-height: 30px;
+  } 
 
 }
