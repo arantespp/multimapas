@@ -22,7 +22,15 @@ import './styles.scss';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 
-import { months, epidemiologicalWeeksForTest } from '../../utils';
+import { months, epidemiologicalWeeksForTest, useStyles } from '../../utils';
+
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
 
 
 
@@ -75,7 +83,9 @@ const Maps: React.FC<Props> = ({
 
   let markers: google.maps.Marker[] = [];
   let markerClusterer: typeof MarkerClusterer;
-  let polygons: Array<{ polygon: google.maps.Polygon; id: string }>;
+  let polygons: Array<{ polygon: google.maps.Polygon; id: string }>; //TODO: definir estado e testar
+  
+  
 
   useEffect(() => {
     return () => {
@@ -110,6 +120,7 @@ const Maps: React.FC<Props> = ({
   //Estados dos selects dos meses.
   const [initialMonth, setIinitialMonth] = useState();
   const [finalMonth, setFinalMonth] = useState();
+  const [finalMonths, setFinalMonths] = useState(months);
 
   //Estados das selects das semanas epidemiologicas
   const [initialEpiWeek, setInitialEpiWeek]  = useState();
@@ -130,6 +141,9 @@ const Maps: React.FC<Props> = ({
     setInitialEpiWeek(undefined);
     setFinalEpiWeek(undefined);
 
+    const newFinalMonthsList = months.filter(month => month.value > initialMonth);
+    setFinalMonths(newFinalMonthsList);
+
   }, [initialMonth]);
 
   useEffect(() => {
@@ -144,6 +158,7 @@ const Maps: React.FC<Props> = ({
   }, [initialEpiWeek]);
 
   /* Metodo utilizado para realizar a logica do filtro envolvendo datas. */
+  //TODO: verificar o date range para a data (igual as datas dos sites de passagens aereas)
   const datesFiltered = (): Array<Data> => {
     if (initialDateInput) {
       if(finalDateInput) {
@@ -195,6 +210,8 @@ const Maps: React.FC<Props> = ({
     return data;
   };
 
+  const classes = useStyles();
+
   const Menu = () => {
     return (
       <Accordion
@@ -211,106 +228,142 @@ const Maps: React.FC<Props> = ({
           <AccordionItemPanel>
             {isMarkerClustererScriptLoaded() ? (
               <div>
-                <input
-                  onChange={showClusterOnChange}
-                  type="checkbox"
-                  checked={showCluster}
+                <FormControlLabel className={classes.checkBox}
+                  control = {
+                    <Checkbox 
+                      onChange = {showClusterOnChange}
+                      checked = {showCluster}
+                      color = "primary"
+                    />
+                  }
+                  label = {"Mostrar Clustets"}
                 />
-                <span>Mostrar Clusters</span>
               </div>
             ) : null}
             {Object.values(filters).map(({ name }) => {
               return (
                 <div key={name}>
-                  <input
-                    onChange={filterOnChange(name)}
-                    type="checkbox"
-                    name={name}
-                    value={name}
-                    checked={filterMenuIsChecked(name)}
+                  <FormControlLabel className={classes.checkBox}
+                    control = {
+                      <Checkbox 
+                        onChange = {filterOnChange(name)}
+                        checked = {filterMenuIsChecked(name)}
+                        color = "primary"
+                        name = {name}
+                        value = {name}
+                      />
+                    }
+                    label = {name}
                   />
-                  <span>{name}</span>
                 </div>
               );
             })}
             {
-              <div className="search-inputs">
-                <label>
-                  Inicial:
-                  <input 
-                    type="date" 
+              <div>
+                <FormControl className={classes.formControlDate}>
+                  <TextField
+                    id="initialDate"
+                    label="Data Inicial"
+                    type="date"
                     onChange = {e => setInitialDateInput(e.target.value)}
-                    value = {initialDateInput}/>
-                </label>
-                <label>
-                  Final:
-                  <input 
+                    value = {initialDateInput}
+                    className={classes.textField}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                </FormControl>
+                <FormControl className={classes.formControlDate}>
+                  <TextField
+                    id="finalDate"
+                    label="Data Final"
                     type="date"
                     onChange = {e => setFinalDateInput(e.target.value)}
-                    value = {finalDateInput}/>
-                </label>
+                    value = {finalDateInput}
+                    className={classes.textField}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                  />
+                 </FormControl>
               </div>
             }
             {
-              <div className="search-inputs">
-                <label>
-                  Inicial:
-                  <select value={initialMonth} onChange={e => setIinitialMonth(e.target.value)}>
-                    <option>Escolha o mês</option>
+              <div>
+                <FormControl className={classes.formControlSelect}>
+                  <InputLabel htmlFor="Mês Inicial">Mês Incial</InputLabel>
+                  <Select
+                    value={initialMonth}
+                    onChange={e => setIinitialMonth(e.target.value)}
+                    inputProps={{
+                      name: 'initialMonth',
+                      id: 'initial-month',
+                    }}
+                  >
                     {
                       months.map(month => {return (
-                        <option key={month.value} value={month.value}>{month.label}</option>
+                        <MenuItem key={`initial-month-${month.value}`} value={month.value}>{month.label}</MenuItem>
                       )})
-                    }
-                  </select>
-                </label>
-                <label>
-                  Final:
-                  <select value={finalMonth} onChange={e => setFinalMonth(e.target.value)}>
-                    <option>Escolha o mês</option>
+                    } 
+                  </Select>
+                </FormControl>
+                <FormControl className={classes.formControlSelect}>
+                  <InputLabel htmlFor="Mês Final">Mês Final</InputLabel>
+                  <Select
+                    value={finalMonth}
+                    onChange={e => setFinalMonth(e.target.value)}
+                    inputProps={{
+                      name: 'finalMonth',
+                      id: 'final-month',
+                    }}
+                  >
                     {
-                      months.map(month => {return (
-                        <option key={month.value} value={month.value}>{month.label}</option>
+                      finalMonths.map(month => {return (
+                        <MenuItem key={`final-month-${month.value}`} value={month.value}>{month.label}</MenuItem>
                       )})
-                    }
-                  </select>
-                </label>
+                    } 
+                  </Select>
+                </FormControl>
               </div>
             }
             {
-              <div className="search-inputs">
-                <label>
-                  Inicial:
-                  <select value={initialEpiWeek} 
-                    onChange = {e => setInitialEpiWeek(e.target.value)}>
-                    <option>Semana Inicial</option> 
-                    {
-                      epidemiologicalWeeksForTest.map((semana) => {
-                        return <option 
-                            key = {`semana-inicial-${semana.numero}`} 
-                            value ={semana.numero}>
-                              {semana.numero}
-                          </option>
-                      })
-                    }
-                  </select>
-                </label>
-                <label>
-                  Final:
-                  <select value={finalEpiWeek} 
-                    onChange = {e => setFinalEpiWeek(e.target.value)}>
-                    <option>Semana Final</option> 
-                    {
-                      epidemiologicalWeeksFinal.map((semana) => {
-                        return <option 
-                            key={`semana-final-${semana.numero}`} 
-                            value={semana.numero}>
-                              {semana.numero}
-                          </option>
-                      })
-                    }
-                  </select>
-                </label>
+              <div>
+                <form className={classes.root} autoComplete="off" noValidate>
+                  <FormControl className={classes.formControlSelect}>
+                    <InputLabel htmlFor="Semana Inicial">Semana Incial</InputLabel>
+                    <Select
+                      value={initialEpiWeek}
+                      onChange={e => setInitialEpiWeek(e.target.value)}
+                      inputProps={{
+                        name: 'initialEpiWeek',
+                        id: 'initial-epi-week',
+                      }}
+                    >
+                      {
+                        epidemiologicalWeeksForTest.map(semana => {return (
+                          <MenuItem key={`initial-epiWeek-${semana.numero}`} value={semana.numero}>{semana.numero}</MenuItem>
+                        )})
+                      } 
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControlSelect}>
+                    <InputLabel htmlFor="Semana Final">Semana Final</InputLabel>
+                    <Select
+                      value={finalEpiWeek}
+                      onChange={e => setFinalEpiWeek(e.target.value)}
+                      inputProps={{
+                        name: 'finalEpiWeek',
+                        id: 'final-epi-week',
+                      }}
+                    >
+                      {
+                        epidemiologicalWeeksFinal.map(semana => {return (
+                          <MenuItem key={`final-epiWeek-${semana.numero}`} value={semana.numero}>{semana.numero}</MenuItem>
+                        )})
+                      } 
+                    </Select>
+                  </FormControl>
+                </form>
               </div>
             }
           </AccordionItemPanel>
@@ -350,7 +403,7 @@ const Maps: React.FC<Props> = ({
             // }
 
             const infoWindow = new googleMaps.InfoWindow();
-
+            
             if (!polygons) {
               polygons = polygonsData.map(({ id, paths }) => {
                 const polygon = new googleMaps.Polygon({
