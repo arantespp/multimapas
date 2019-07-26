@@ -271,6 +271,10 @@ const Maps: React.FC<Props> = ({
                     InputLabelProps={{
                       shrink: true,
                     }}
+                    inputProps={{
+                      min: "2018-01-01", 
+                      max: "2018-12-31"
+                    }}
                   />
                 </FormControl>
                 <FormControl className={classes.formControlDate}>
@@ -283,6 +287,10 @@ const Maps: React.FC<Props> = ({
                     className={classes.textField}
                     InputLabelProps={{
                       shrink: true,
+                    }}
+                    inputProps={{
+                      min: "2018-01-01", 
+                      max: "2018-12-31"
                     }}
                   />
                  </FormControl>
