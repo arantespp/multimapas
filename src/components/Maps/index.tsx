@@ -118,7 +118,7 @@ const Maps: React.FC<Props> = ({
   const [finalDateInput, setFinalDateInput]  = useState();
 
   //Estados dos selects dos meses.
-  const [initialMonth, setIinitialMonth] = useState();
+  const [initialMonth, setInitialMonth] = useState();
   const [finalMonth, setFinalMonth] = useState();
   const [finalMonths, setFinalMonths] = useState(months);
 
@@ -128,8 +128,8 @@ const Maps: React.FC<Props> = ({
   const [epidemiologicalWeeksFinal, setEpidemiologicalWeeksFinal] = useState(epidemiologicalWeeksForTest);
 
   useEffect(() => {
-    setIinitialMonth(undefined);
-    setFinalMonth(undefined);
+    setInitialMonth(undefined);
+    setFinalMonth(months);
     setInitialEpiWeek(undefined);
     setFinalEpiWeek(undefined);
     
@@ -149,8 +149,8 @@ const Maps: React.FC<Props> = ({
   useEffect(() => {
     setInitialDateInput(undefined);
     setFinalDateInput(undefined);
-    setIinitialMonth(undefined);
-    setFinalMonth(undefined);
+    setInitialMonth(undefined);
+    setFinalMonth(months);
     
     const newEpiWeeksFinal = epidemiologicalWeeksForTest.filter(week => week.numero > initialEpiWeek);
     setEpidemiologicalWeeksFinal(newEpiWeeksFinal);
@@ -299,10 +299,10 @@ const Maps: React.FC<Props> = ({
             {
               <div>
                 <FormControl className={classes.formControlSelect}>
-                  <InputLabel htmlFor="Mês Inicial">Mês Incial</InputLabel>
+                  <InputLabel htmlFor="Mês Inicial">Mês Inicial</InputLabel>
                   <Select
                     value={initialMonth}
-                    onChange={e => setIinitialMonth(e.target.value)}
+                    onChange={e => setInitialMonth(e.target.value)}
                     inputProps={{
                       name: 'initialMonth',
                       id: 'initial-month',
@@ -338,7 +338,7 @@ const Maps: React.FC<Props> = ({
               <div>
                 <form className={classes.root} autoComplete="off" noValidate>
                   <FormControl className={classes.formControlSelect}>
-                    <InputLabel htmlFor="Semana Inicial">Semana Incial</InputLabel>
+                    <InputLabel htmlFor="Semana Inicial">Semana Inicial</InputLabel>
                     <Select
                       value={initialEpiWeek}
                       onChange={e => setInitialEpiWeek(e.target.value)}
