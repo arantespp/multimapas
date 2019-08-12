@@ -10,7 +10,6 @@ import {
 } from 'react-accessible-accordion';
 import ReactGoogleMapLoader from 'react-google-maps-loader';
 
-import { applyFilters, filters } from './filters';
 import { polygonsData } from './polygons-data';
 
 import { key } from '../../key';
@@ -31,13 +30,37 @@ import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-
-
+import { Radio, RadioGroup, FormLabel } from '@material-ui/core';
 
 declare var MarkerClusterer: any;
 
+enum NotificationsFilter {
+  Positives = 'Positives',
+  Suspects = 'Suspects',
+  All = 'All'
+}
+
+enum Analysis {
+  All = 'All',
+  Clinical = 'Clinical',
+  Exam = 'Exam'
+}
+enum FinalClassification {
+  All = 'All',
+  Simple = 'Simple',
+  Alarming = 'Alarming',
+  Severe = 'Severe'
+}
+
+enum CaseEvolution {
+  All = 'All',
+  DeathFromDengue = 'DeathFromDengue',
+  DeathFromOthers = 'DeathFromOthers',
+  Cure = 'Cure',
+  Ignored = 'Ignored'
+}
+
 interface Props {
-  chosenFiltersDefault?: string[];
   showClusterDefault?: boolean;
   data: Data[];
   openDataDetailsModal: (data: Data) => void;
@@ -53,20 +76,7 @@ const blueMarker = 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 const yellowMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 const greenMarker = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
 
-const markerColor = (data: Data) => {
-  if (!filters.isPositive.filter(data, 0)) {
-    return blueMarker;
-  } else {
-    if (filters.isAutoctone.filter(data, 0)) {
-      return yellowMarker;
-    } else {
-      return greenMarker;
-    }
-  }
-};
-
 const Maps: React.FC<Props> = ({
-  chosenFiltersDefault = [],
   data,
   showClusterDefault = true,
   openDataDetailsModal,
@@ -74,18 +84,29 @@ const Maps: React.FC<Props> = ({
   width
 }) => {
   const mapRef = useRef(null);
-  const [chosenFilters, setChosenFilters] = useState<string[]>(
-    chosenFiltersDefault
-  );
-   
+
   const [map, setMap] = useState<google.maps.Map>();
   const [showCluster, setShowCluster] = useState<boolean>(showClusterDefault);
 
   let markers: google.maps.Marker[] = [];
   let markerClusterer: typeof MarkerClusterer;
-  let polygons: Array<{ polygon: google.maps.Polygon; id: string }>; //TODO: definir estado e testar
-  
-  
+  const polygons = useRef<Array<{ polygon: google.maps.Polygon; id: string }>>(
+    []
+  );
+
+  const [notificationsFilter, setNotificationsFilter] = useState<
+    NotificationsFilter
+  >(NotificationsFilter.Positives);
+
+  const [analysisFilter, setAnalysisFilter] = useState<Analysis>(Analysis.All);
+
+  const [finalClassificationFilter, setFinalClassificationFilter] = useState<
+    FinalClassification
+  >(FinalClassification.All);
+
+  const [caseEvolutionFilter, setCaseEvolutionFilter] = useState<CaseEvolution>(
+    CaseEvolution.All
+  );
 
   useEffect(() => {
     return () => {
@@ -100,22 +121,9 @@ const Maps: React.FC<Props> = ({
     setShowCluster(!showCluster);
   };
 
-  const filterOnChange = (filterName: string) => () => {
-    setChosenFilters(cf => {
-      const filterExists = !!cf.find(filter => filter === filterName);
-      return filterExists
-        ? cf.filter(name => name !== filterName)
-        : [...cf, filterName];
-    });
-  };
-
-  const filterMenuIsChecked = (filter: string): boolean => {
-    return !!chosenFilters.find(filterName => filter === filterName);
-  };
-  
   //Estados dos inputs de datas.
-  const [initialDateInput, setInitialDateInput]  = useState();
-  const [finalDateInput, setFinalDateInput]  = useState();
+  const [initialDateInput, setInitialDateInput] = useState();
+  const [finalDateInput, setFinalDateInput] = useState();
 
   //Estados dos selects dos meses.
   const [initialMonth, setInitialMonth] = useState();
@@ -123,16 +131,17 @@ const Maps: React.FC<Props> = ({
   const [finalMonths, setFinalMonths] = useState(months);
 
   //Estados das selects das semanas epidemiologicas
-  const [initialEpiWeek, setInitialEpiWeek]  = useState();
-  const [finalEpiWeek, setFinalEpiWeek]  = useState();
-  const [epidemiologicalWeeksFinal, setEpidemiologicalWeeksFinal] = useState(epidemiologicalWeeksForTest);
+  const [initialEpiWeek, setInitialEpiWeek] = useState();
+  const [finalEpiWeek, setFinalEpiWeek] = useState();
+  const [epidemiologicalWeeksFinal, setEpidemiologicalWeeksFinal] = useState(
+    epidemiologicalWeeksForTest
+  );
 
   useEffect(() => {
     setInitialMonth(undefined);
     setFinalMonth(months);
     setInitialEpiWeek(undefined);
     setFinalEpiWeek(undefined);
-    
   }, [initialDateInput]);
 
   useEffect(() => {
@@ -141,9 +150,10 @@ const Maps: React.FC<Props> = ({
     setInitialEpiWeek(undefined);
     setFinalEpiWeek(undefined);
 
-    const newFinalMonthsList = months.filter(month => month.value > initialMonth);
+    const newFinalMonthsList = months.filter(
+      month => month.value > initialMonth
+    );
     setFinalMonths(newFinalMonthsList);
-
   }, [initialMonth]);
 
   useEffect(() => {
@@ -151,62 +161,115 @@ const Maps: React.FC<Props> = ({
     setFinalDateInput(undefined);
     setInitialMonth(undefined);
     setFinalMonth(months);
-    
-    const newEpiWeeksFinal = epidemiologicalWeeksForTest.filter(week => week.numero > initialEpiWeek);
+
+    const newEpiWeeksFinal = epidemiologicalWeeksForTest.filter(
+      week => week.numero > initialEpiWeek
+    );
     setEpidemiologicalWeeksFinal(newEpiWeeksFinal);
-    
   }, [initialEpiWeek]);
+
+  const markerColor = (data: Data) => {
+    // if (!filters.isPositive.filter(data, 0)) {
+    //   return blueMarker;
+    // } else {
+    //   if (filters.isAutoctone.filter(data, 0)) {
+    //     return yellowMarker;
+    //   } else {
+    //     return greenMarker;
+    //   }
+    // }
+    return yellowMarker;
+  };
 
   /* Metodo utilizado para realizar a logica do filtro envolvendo datas. */
   //TODO: verificar o date range para a data (igual as datas dos sites de passagens aereas)
   const datesFiltered = (): Array<Data> => {
     if (initialDateInput) {
-      if(finalDateInput) {
-        const initialDate = moment(initialDateInput), finalDate = moment(finalDateInput);
+      if (finalDateInput) {
+        const initialDate = moment(initialDateInput),
+          finalDate = moment(finalDateInput);
 
         if (initialDate.isAfter(finalDate)) {
-          return data.filter(data => data.dtNotific && data.dtNotific.isBetween(finalDate, initialDate.add(1,'day'), undefined, "[]"));
-        } 
-        
-        return data.filter(data => data.dtNotific && data.dtNotific.isBetween(initialDate, finalDate.add(1,'day'), undefined, "[]"));
-      } 
-      
-      return data.filter(data => data.dtNotific && data.dtNotific.isSameOrAfter(moment(initialDateInput)));
+          return data.filter(
+            data =>
+              data.dtNotific &&
+              data.dtNotific.isBetween(
+                finalDate,
+                initialDate.add(1, 'day'),
+                undefined,
+                '[]'
+              )
+          );
+        }
+
+        return data.filter(
+          data =>
+            data.dtNotific &&
+            data.dtNotific.isBetween(
+              initialDate,
+              finalDate.add(1, 'day'),
+              undefined,
+              '[]'
+            )
+        );
+      }
+
+      return data.filter(
+        data =>
+          data.dtNotific &&
+          data.dtNotific.isSameOrAfter(moment(initialDateInput))
+      );
     }
 
     if (initialMonth) {
-      if(finalMonth) {
-        return data.filter(data => data.dtNotific && (data.dtNotific.month() == initialMonth || data.dtNotific.month() == finalMonth));
+      if (finalMonth) {
+        return data.filter(
+          data =>
+            data.dtNotific &&
+            (data.dtNotific.month() == initialMonth ||
+              data.dtNotific.month() == finalMonth)
+        );
       }
-      
-      return data.filter(data => data.dtNotific && data.dtNotific.month() == initialMonth);
+
+      return data.filter(
+        data => data.dtNotific && data.dtNotific.month() == initialMonth
+      );
     }
 
     if (initialEpiWeek) {
-      
       const epiWeekInitialYear = initialEpiWeek == 1 ? '2017' : '2018';
       const epiWeekFinalYear = '2018';
 
-      const dateInfoInitialEpiWeek = epidemiologicalWeeksForTest.find((week) => {
-        return week.numero == initialEpiWeek
+      const dateInfoInitialEpiWeek = epidemiologicalWeeksForTest.find(week => {
+        return week.numero == initialEpiWeek;
       });
 
-      const initialDate = `${epiWeekInitialYear}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.inicio.mes}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.inicio.dia}`;
-      let finalDate = `${epiWeekFinalYear}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.final.mes}-${dateInfoInitialEpiWeek && dateInfoInitialEpiWeek.final.dia}`;
-      
+      const initialDate = `${epiWeekInitialYear}-${dateInfoInitialEpiWeek &&
+        dateInfoInitialEpiWeek.inicio.mes}-${dateInfoInitialEpiWeek &&
+        dateInfoInitialEpiWeek.inicio.dia}`;
+      let finalDate = `${epiWeekFinalYear}-${dateInfoInitialEpiWeek &&
+        dateInfoInitialEpiWeek.final.mes}-${dateInfoInitialEpiWeek &&
+        dateInfoInitialEpiWeek.final.dia}`;
+
       if (finalEpiWeek) {
-        const dateInfoFinalEpiWeek = epidemiologicalWeeksForTest.find((week) => {
-          return week.numero == finalEpiWeek
+        const dateInfoFinalEpiWeek = epidemiologicalWeeksForTest.find(week => {
+          return week.numero == finalEpiWeek;
         });
-        
-        finalDate = `${epiWeekFinalYear}-${dateInfoFinalEpiWeek && dateInfoFinalEpiWeek.final.mes}-${dateInfoFinalEpiWeek && dateInfoFinalEpiWeek.final.dia}`;
+
+        finalDate = `${epiWeekFinalYear}-${dateInfoFinalEpiWeek &&
+          dateInfoFinalEpiWeek.final.mes}-${dateInfoFinalEpiWeek &&
+          dateInfoFinalEpiWeek.final.dia}`;
       }
-            
-      const dataEpiWeekFiltered = data.filter(data => data.dtNotific && data.dtNotific.isBetween(initialDate, finalDate, undefined, "[]"));
+
+      const dataEpiWeekFiltered = data.filter(
+        data =>
+          data.dtNotific &&
+          data.dtNotific.isBetween(initialDate, finalDate, undefined, '[]')
+      );
 
       return dataEpiWeekFiltered;
     }
-    
+
     return data;
   };
 
@@ -226,38 +289,162 @@ const Maps: React.FC<Props> = ({
             </AccordionItemButton>
           </AccordionItemHeading>
           <AccordionItemPanel>
-            {isMarkerClustererScriptLoaded() ? (
-              <div>
-                <FormControlLabel className={classes.checkBox}
-                  control = {
-                    <Checkbox 
-                      onChange = {showClusterOnChange}
-                      checked = {showCluster}
-                      color = "primary"
-                    />
-                  }
-                  label = {"Mostrar Clustets"}
+            <FormControlLabel
+              className={classes.checkBox}
+              control={
+                <Checkbox
+                  onChange={showClusterOnChange}
+                  checked={showCluster}
                 />
-              </div>
-            ) : null}
-            {Object.values(filters).map(({ name }) => {
-              return (
-                <div key={name}>
-                  <FormControlLabel className={classes.checkBox}
-                    control = {
-                      <Checkbox 
-                        onChange = {filterOnChange(name)}
-                        checked = {filterMenuIsChecked(name)}
-                        color = "primary"
-                        name = {name}
-                        value = {name}
-                      />
+              }
+              label={'Mostrar Clusters'}
+            />
+            <br />
+            <FormControlLabel
+              className={classes.checkBox}
+              control={
+                <Checkbox
+                  onChange={showClusterOnChange}
+                  checked={showCluster}
+                />
+              }
+              label={'Casos Autóctones'}
+            />
+            <br />
+
+            <FormControl component="fieldset" className={classes.formControl}>
+              <FormLabel component="legend">Notificações</FormLabel>
+              <RadioGroup
+                aria-label="notificações"
+                row
+                onChange={(e: any) => setNotificationsFilter(e.target.value)}
+                value={notificationsFilter}
+              >
+                <FormControlLabel
+                  value={NotificationsFilter.All}
+                  control={<Radio />}
+                  label="Todas"
+                />
+                <FormControlLabel
+                  value={NotificationsFilter.Positives}
+                  control={<Radio />}
+                  label="Positivas"
+                />
+                <FormControlLabel
+                  value={NotificationsFilter.Suspects}
+                  control={<Radio />}
+                  label="Suspeitas"
+                />
+              </RadioGroup>
+            </FormControl>
+            <br />
+            {notificationsFilter === NotificationsFilter.Positives ? (
+              <>
+                <FormControl
+                  component="fieldset"
+                  className={classes.formControl}
+                >
+                  <FormLabel component="legend">Análises</FormLabel>
+                  <RadioGroup
+                    aria-label="análises"
+                    row
+                    onChange={(e: any) => setAnalysisFilter(e.target.value)}
+                    value={analysisFilter}
+                  >
+                    <FormControlLabel
+                      value={Analysis.All}
+                      control={<Radio />}
+                      label="Todas"
+                    />
+                    <FormControlLabel
+                      value={Analysis.Clinical}
+                      control={<Radio />}
+                      label="Clínica"
+                    />
+                    <FormControlLabel
+                      value={Analysis.Exam}
+                      control={<Radio />}
+                      label="Exame"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                <FormControl
+                  component="fieldset"
+                  className={classes.formControl}
+                >
+                  <FormLabel component="legend">Classificação Final</FormLabel>
+                  <RadioGroup
+                    aria-label="classificação final"
+                    row
+                    onChange={(e: any) =>
+                      setFinalClassificationFilter(e.target.value)
                     }
-                    label = {name}
-                  />
-                </div>
-              );
-            })}
+                    value={finalClassificationFilter}
+                  >
+                    <FormControlLabel
+                      value={FinalClassification.All}
+                      control={<Radio />}
+                      label="Todas"
+                    />
+                    <FormControlLabel
+                      value={FinalClassification.Simple}
+                      control={<Radio />}
+                      label="Simples"
+                    />
+                    <FormControlLabel
+                      value={FinalClassification.Alarming}
+                      control={<Radio />}
+                      label="Alarmante"
+                    />
+                    <FormControlLabel
+                      value={FinalClassification.Severe}
+                      control={<Radio />}
+                      label="Grave"
+                    />
+                  </RadioGroup>
+                </FormControl>
+                <FormControl
+                  component="fieldset"
+                  className={classes.formControl}
+                >
+                  <FormLabel component="legend">Evolução no Caso</FormLabel>
+                  <RadioGroup
+                    aria-label="evolução no caso"
+                    row
+                    onChange={(e: any) =>
+                      setCaseEvolutionFilter(e.target.value)
+                    }
+                    value={caseEvolutionFilter}
+                  >
+                    <FormControlLabel
+                      value={CaseEvolution.All}
+                      control={<Radio />}
+                      label="Todos"
+                    />
+                    <FormControlLabel
+                      value={CaseEvolution.Cure}
+                      control={<Radio />}
+                      label="Cura"
+                    />
+                    <FormControlLabel
+                      value={CaseEvolution.DeathFromDengue}
+                      control={<Radio />}
+                      label="Ób. Dengue"
+                    />
+                    <FormControlLabel
+                      value={CaseEvolution.DeathFromOthers}
+                      control={<Radio />}
+                      label="Ób. Outros"
+                    />
+                    <FormControlLabel
+                      value={CaseEvolution.Ignored}
+                      control={<Radio />}
+                      label="Ignorado"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </>
+            ) : null}
             {
               <div>
                 <FormControl className={classes.formControlDate}>
@@ -265,15 +452,15 @@ const Maps: React.FC<Props> = ({
                     id="initialDate"
                     label="Data Inicial"
                     type="date"
-                    onChange = {e => setInitialDateInput(e.target.value)}
-                    value = {initialDateInput}
+                    onChange={e => setInitialDateInput(e.target.value)}
+                    value={initialDateInput}
                     className={classes.textField}
                     InputLabelProps={{
-                      shrink: true,
+                      shrink: true
                     }}
                     inputProps={{
-                      min: "2018-01-01", 
-                      max: "2018-12-31"
+                      min: '2018-01-01',
+                      max: '2018-12-31'
                     }}
                   />
                 </FormControl>
@@ -282,18 +469,18 @@ const Maps: React.FC<Props> = ({
                     id="finalDate"
                     label="Data Final"
                     type="date"
-                    onChange = {e => setFinalDateInput(e.target.value)}
-                    value = {finalDateInput}
+                    onChange={e => setFinalDateInput(e.target.value)}
+                    value={finalDateInput}
                     className={classes.textField}
                     InputLabelProps={{
-                      shrink: true,
+                      shrink: true
                     }}
                     inputProps={{
-                      min: "2018-01-01", 
-                      max: "2018-12-31"
+                      min: '2018-01-01',
+                      max: '2018-12-31'
                     }}
                   />
-                 </FormControl>
+                </FormControl>
               </div>
             }
             {
@@ -305,14 +492,19 @@ const Maps: React.FC<Props> = ({
                     onChange={e => setInitialMonth(e.target.value)}
                     inputProps={{
                       name: 'initialMonth',
-                      id: 'initial-month',
+                      id: 'initial-month'
                     }}
                   >
-                    {
-                      months.map(month => {return (
-                        <MenuItem key={`initial-month-${month.value}`} value={month.value}>{month.label}</MenuItem>
-                      )})
-                    } 
+                    {months.map(month => {
+                      return (
+                        <MenuItem
+                          key={`initial-month-${month.value}`}
+                          value={month.value}
+                        >
+                          {month.label}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
                 <FormControl className={classes.formControlSelect}>
@@ -322,14 +514,19 @@ const Maps: React.FC<Props> = ({
                     onChange={e => setFinalMonth(e.target.value)}
                     inputProps={{
                       name: 'finalMonth',
-                      id: 'final-month',
+                      id: 'final-month'
                     }}
                   >
-                    {
-                      finalMonths.map(month => {return (
-                        <MenuItem key={`final-month-${month.value}`} value={month.value}>{month.label}</MenuItem>
-                      )})
-                    } 
+                    {finalMonths.map(month => {
+                      return (
+                        <MenuItem
+                          key={`final-month-${month.value}`}
+                          value={month.value}
+                        >
+                          {month.label}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </div>
@@ -338,20 +535,27 @@ const Maps: React.FC<Props> = ({
               <div>
                 <form className={classes.root} autoComplete="off" noValidate>
                   <FormControl className={classes.formControlSelect}>
-                    <InputLabel htmlFor="Semana Inicial">Semana Inicial</InputLabel>
+                    <InputLabel htmlFor="Semana Inicial">
+                      Semana Inicial
+                    </InputLabel>
                     <Select
                       value={initialEpiWeek}
                       onChange={e => setInitialEpiWeek(e.target.value)}
                       inputProps={{
                         name: 'initialEpiWeek',
-                        id: 'initial-epi-week',
+                        id: 'initial-epi-week'
                       }}
                     >
-                      {
-                        epidemiologicalWeeksForTest.map(semana => {return (
-                          <MenuItem key={`initial-epiWeek-${semana.numero}`} value={semana.numero}>{semana.numero}</MenuItem>
-                        )})
-                      } 
+                      {epidemiologicalWeeksForTest.map(semana => {
+                        return (
+                          <MenuItem
+                            key={`initial-epiWeek-${semana.numero}`}
+                            value={semana.numero}
+                          >
+                            {semana.numero}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                   </FormControl>
                   <FormControl className={classes.formControlSelect}>
@@ -361,19 +565,37 @@ const Maps: React.FC<Props> = ({
                       onChange={e => setFinalEpiWeek(e.target.value)}
                       inputProps={{
                         name: 'finalEpiWeek',
-                        id: 'final-epi-week',
+                        id: 'final-epi-week'
                       }}
                     >
-                      {
-                        epidemiologicalWeeksFinal.map(semana => {return (
-                          <MenuItem key={`final-epiWeek-${semana.numero}`} value={semana.numero}>{semana.numero}</MenuItem>
-                        )})
-                      } 
+                      {epidemiologicalWeeksFinal.map(semana => {
+                        return (
+                          <MenuItem
+                            key={`final-epiWeek-${semana.numero}`}
+                            value={semana.numero}
+                          >
+                            {semana.numero}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                   </FormControl>
                 </form>
               </div>
             }
+            <FormControl component="fieldset" className={classes.formControl}>
+              <TextField
+                label="Filtro por Bairro"
+                className={classes.textField}
+                margin="none"
+              />
+              <br />
+              <TextField
+                label="Filtro por Idade"
+                className={classes.textField}
+                margin="none"
+              />
+            </FormControl>
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
@@ -400,20 +622,10 @@ const Maps: React.FC<Props> = ({
               );
             }
 
-            // if (!kmlLayer) {
-            //   kmlLayer = new googleMaps.KmlLayer({
-            //     map,
-            //     preserveViewport: true,
-            //     // screenOverlays: false,
-            //     // suppressInfoWindows?: boolean;
-            //     url: `https://arantespp.github.io/multimapas/KMZs/sao-carlos.kmz`
-            //   });
-            // }
+            if (map && polygons.current.length === 0) {
+              const infoWindow = new googleMaps.InfoWindow();
 
-            const infoWindow = new googleMaps.InfoWindow();
-            
-            if (!polygons) {
-              polygons = polygonsData.map(({ id, paths }) => {
+              polygons.current = polygonsData.map(({ id, paths }) => {
                 const polygon = new googleMaps.Polygon({
                   map,
                   paths,
@@ -424,7 +636,7 @@ const Maps: React.FC<Props> = ({
                   fillOpacity: 0.05,
                   clickable: true
                 });
-                polygon.addListener('click', e => {
+                polygon.addListener('click', (e: any) => {
                   const latLng = e.latLng;
                   infoWindow.setContent(id);
                   infoWindow.setPosition(latLng);
@@ -433,37 +645,35 @@ const Maps: React.FC<Props> = ({
                 return { id, polygon };
               });
             }
-            
-            markers = datesFiltered()
-              .filter(applyFilters(chosenFilters))
-              .map(d => {
-                const position = new googleMaps.LatLng(
-                  Number(d.latitude),
-                  Number(d.longitude)
-                );
-                const marker = new googleMaps.Marker({
-                  position,
-                  map,
-                  icon: markerColor(d)
-                });
-                marker.addListener('click', e => {
-                  let block = '???';
-                  if (polygons) {
-                    polygons.forEach(({ id, polygon }) => {
-                      if (
-                        googleMaps.geometry.poly.containsLocation(
-                          e.latLng,
-                          polygon
-                        )
-                      ) {
-                        block = id;
-                      }
-                    });
-                  }
-                  openDataDetailsModal({ ...d, block });
-                });
-                return marker;
+
+            markers = datesFiltered().map(d => {
+              const position = new googleMaps.LatLng(
+                Number(d.latitude),
+                Number(d.longitude)
+              );
+              const marker = new googleMaps.Marker({
+                position,
+                map,
+                icon: markerColor(d)
               });
+              marker.addListener('click', e => {
+                let block = '???';
+                if (polygons.current.length > 0) {
+                  polygons.current.forEach(({ id, polygon }) => {
+                    if (
+                      googleMaps.geometry.poly.containsLocation(
+                        e.latLng,
+                        polygon
+                      )
+                    ) {
+                      block = id;
+                    }
+                  });
+                }
+                openDataDetailsModal({ ...d, block });
+              });
+              return marker;
+            });
 
             if (!!map && showCluster && isMarkerClustererScriptLoaded()) {
               markerClusterer = new MarkerClusterer(map, markers, {

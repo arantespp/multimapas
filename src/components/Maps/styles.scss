@@ -2,10 +2,12 @@
   position: relative;
 
   .menu {
-    width: 420px;
+    position: absolute;
+
+    min-width: 200px;
+    max-width: 93%;
     height: 0px;
 
-    position: relative;
     top: 10px;
     left: 10px;
     z-index: 9;
@@ -15,6 +17,8 @@
       -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
       -moz-box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
       box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+
+      padding: 0px 15px 15px 15px;
     }
 
     .AccordionItemButton {
@@ -31,11 +35,11 @@
     margin: 6px 3px;
   }
 
-  .search-inputs label { 
+  .search-inputs label {
     margin: 0 3px 0;
     font-size: 18px;
   }
-  
+
   .search-inputs label input {
     background: #fafafa;
     border: 1px solid #dbdbdb;
@@ -51,6 +55,5 @@
     width: 132px;
     margin: 5px;
     min-height: 25px;
-  } 
-
+  }
 }
