@@ -288,6 +288,18 @@ const Maps: React.FC<Props> = ({
       ((autoctonesCase && String(data.TPAUTOCTO) === '1') ||
         (!autoctonesCase && String(data.TPAUTOCTO) !== '1'));
 
+    const isSuspect = () => {
+      return String(data.CLASSI_FIN) !== '5' || String(data.CLASSI_FIN) !== '8';
+    };
+
+    // Notification Type filter
+    f =
+      f &&
+      (notificationsFilter === NotificationsFilter.All ||
+        (notificationsFilter === NotificationsFilter.Positives &&
+          !isSuspect()) ||
+        (notificationsFilter === NotificationsFilter.Suspects && isSuspect()));
+
     // Analysis filter
     f =
       f &&
@@ -370,11 +382,11 @@ const Maps: React.FC<Props> = ({
                 onChange={(e: any) => setNotificationsFilter(e.target.value)}
                 value={notificationsFilter}
               >
-                <FormControlLabel
+                {/* <FormControlLabel
                   value={NotificationsFilter.All}
                   control={<Radio />}
                   label="Todas"
-                />
+                /> */}
                 <FormControlLabel
                   value={NotificationsFilter.Positives}
                   control={<Radio />}
@@ -635,19 +647,24 @@ const Maps: React.FC<Props> = ({
                 </form>
               </div>
             }
-            <FormControl component="fieldset" className={classes.formControl}>
+            {/* <FormControl component="fieldset" className={classes.formControl}>
               <TextField
                 label="Filtro por Bairro"
                 className={classes.textField}
                 margin="none"
+                // onChange={e => (filterByNeighborhood.current = e.target.value)}
               />
               <br />
               <TextField
                 label="Filtro por Idade"
+                type="number"
                 className={classes.textField}
                 margin="none"
+                onChange={filterByAgeOnChange}
+                defaultValue={filterByAge}
+                // ref={filterByAgeRef}
               />
-            </FormControl>
+            </FormControl> */}
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>

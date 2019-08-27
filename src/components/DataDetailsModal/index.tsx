@@ -5,6 +5,8 @@ import Modal from 'react-modal';
 
 import { Data } from '../../interfaces/data';
 
+import { serialDataToMoment } from '../../utils/serial-data-to-moment';
+
 import './styles.scss';
 
 const notifyingUnits: { [key: string]: string } = {
@@ -140,6 +142,9 @@ const DataDetailsModal: React.FC<{
   const fieldValues = (field: keyof typeof fields) => {
     const dataField = String(data![field as keyof Data] || '-');
     switch (field) {
+      case 'DT_NOTIFIC':
+      case 'DT_SIN_PRI':
+        return serialDataToMoment(dataField).format('DD/MM/YYYY');
       case 'SEM_NOT':
       case 'SEM_PRI':
         return dataField.slice(-2);
@@ -161,6 +166,23 @@ const DataDetailsModal: React.FC<{
         return criterion[dataField];
       case 'EVOLUCAO':
         return caseEvolution[dataField];
+      case 'NU_IDADE_N':
+        const prefix = dataField.charAt(0);
+        const age = dataField.slice(-2);
+
+        let time;
+
+        if (prefix === '1') {
+          time = age === '1' ? 'HORA' : 'HORAS';
+        } else if (prefix === '2') {
+          time = age === '1' ? 'DIA' : 'DIAS';
+        } else if (prefix === '3') {
+          time = age === '1' ? 'MÊS' : 'MESES';
+        } else if (prefix === '4') {
+          time = age === '1' ? 'ANO' : 'ANOS';
+        }
+
+        return `${age} ${time}`;
       default:
         return dataField;
     }
@@ -201,7 +223,7 @@ const DataDetailsModal: React.FC<{
           {data &&
             (Object.keys(fields) as Array<keyof typeof fields>).map(field => {
               return (
-                <div className="block-line">
+                <div key={field} className="block-line">
                   <span className="field">{fields[field]}:</span>
                   <span className="field-value">{fieldValues(field)}</span>
                 </div>
