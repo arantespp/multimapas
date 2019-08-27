@@ -129,7 +129,8 @@ const fields = {
   TPAUTOCTO: 'CASO AUTÓCTONE',
   CLASSI_FIN: 'CLASSIFICAÇÃO ',
   CRITERIO: 'CRITÉRIO DE CONFIRMAÇÃO/DESCARTE',
-  EVOLUCAO: 'EVOLUÇÃO DO CASO'
+  EVOLUCAO: 'EVOLUÇÃO DO CASO',
+  block: 'QUADRA'
 };
 
 const DataDetailsModal: React.FC<{
@@ -137,7 +138,7 @@ const DataDetailsModal: React.FC<{
   data: Data | null;
 }> = ({ close, data }) => {
   const fieldValues = (field: keyof typeof fields) => {
-    const dataField = String(data![field as keyof Data]);
+    const dataField = String(data![field as keyof Data] || '-');
     switch (field) {
       case 'SEM_NOT':
       case 'SEM_PRI':
@@ -161,7 +162,7 @@ const DataDetailsModal: React.FC<{
       case 'EVOLUCAO':
         return caseEvolution[dataField];
       default:
-        return dataField || '-';
+        return dataField;
     }
   };
 

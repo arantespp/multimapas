@@ -279,6 +279,50 @@ const Maps: React.FC<Props> = ({
     return data;
   };
 
+  const filters = (data: Data) => {
+    let f = true;
+
+    // Autoctones filter
+    f =
+      f &&
+      ((autoctonesCase && String(data.TPAUTOCTO) === '1') ||
+        (!autoctonesCase && String(data.TPAUTOCTO) !== '1'));
+
+    // Analysis filter
+    f =
+      f &&
+      (analysisFilter === Analysis.All ||
+        (analysisFilter === Analysis.Clinical &&
+          String(data.CRITERIO) === '2') ||
+        (analysisFilter === Analysis.Exam && String(data.CRITERIO) === '1'));
+
+    // Final Classification filter
+    f =
+      f &&
+      (finalClassificationFilter === FinalClassification.All ||
+        (finalClassificationFilter === FinalClassification.Alarming &&
+          String(data.CLASSI_FIN) === '11') ||
+        (finalClassificationFilter === FinalClassification.Severe &&
+          String(data.CLASSI_FIN) === '12') ||
+        (finalClassificationFilter === FinalClassification.Simple &&
+          String(data.CLASSI_FIN) === '10'));
+
+    // Case Evolution filter
+    f =
+      f &&
+      (caseEvolutionFilter === CaseEvolution.All ||
+        (caseEvolutionFilter === CaseEvolution.Cure &&
+          String(data.EVOLUCAO) === '1') ||
+        (caseEvolutionFilter === CaseEvolution.DeathFromDengue &&
+          String(data.EVOLUCAO) === '2') ||
+        (caseEvolutionFilter === CaseEvolution.DeathFromOthers &&
+          String(data.EVOLUCAO) === '3') ||
+        (caseEvolutionFilter === CaseEvolution.Ignored &&
+          String(data.EVOLUCAO) === '9'));
+
+    return f;
+  };
+
   const classes = useStyles();
 
   const Menu = () => {
@@ -374,6 +418,7 @@ const Maps: React.FC<Props> = ({
                     />
                   </RadioGroup>
                 </FormControl>
+                <br />
                 <FormControl
                   component="fieldset"
                   className={classes.formControl}
@@ -409,6 +454,7 @@ const Maps: React.FC<Props> = ({
                     />
                   </RadioGroup>
                 </FormControl>
+                <br />
                 <FormControl
                   component="fieldset"
                   className={classes.formControl}
@@ -652,34 +698,36 @@ const Maps: React.FC<Props> = ({
               });
             }
 
-            markers = datesFiltered().map(d => {
-              const position = new googleMaps.LatLng(
-                Number(d.latitude),
-                Number(d.longitude)
-              );
-              const marker = new googleMaps.Marker({
-                position,
-                map,
-                icon: markerColor(d)
+            markers = datesFiltered()
+              .filter(filters)
+              .map(d => {
+                const position = new googleMaps.LatLng(
+                  Number(d.latitude),
+                  Number(d.longitude)
+                );
+                const marker = new googleMaps.Marker({
+                  position,
+                  map,
+                  icon: markerColor(d)
+                });
+                marker.addListener('click', e => {
+                  let block = '???';
+                  if (polygons.current.length > 0) {
+                    polygons.current.forEach(({ id, polygon }) => {
+                      if (
+                        googleMaps.geometry.poly.containsLocation(
+                          e.latLng,
+                          polygon
+                        )
+                      ) {
+                        block = id;
+                      }
+                    });
+                  }
+                  openDataDetailsModal({ ...d, block });
+                });
+                return marker;
               });
-              marker.addListener('click', e => {
-                let block = '???';
-                if (polygons.current.length > 0) {
-                  polygons.current.forEach(({ id, polygon }) => {
-                    if (
-                      googleMaps.geometry.poly.containsLocation(
-                        e.latLng,
-                        polygon
-                      )
-                    ) {
-                      block = id;
-                    }
-                  });
-                }
-                openDataDetailsModal({ ...d, block });
-              });
-              return marker;
-            });
 
             if (!!map && showCluster && isMarkerClustererScriptLoaded()) {
               markerClusterer = new MarkerClusterer(map, markers, {
