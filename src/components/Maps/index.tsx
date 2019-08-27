@@ -121,6 +121,12 @@ const Maps: React.FC<Props> = ({
     setShowCluster(!showCluster);
   };
 
+  const [autoctonesCase, setAutoctonesCase] = useState(true);
+
+  const autoctonesCaseOnChange = () => {
+    setAutoctonesCase(!autoctonesCase);
+  };
+
   //Estados dos inputs de datas.
   const [initialDateInput, setInitialDateInput] = useState();
   const [finalDateInput, setFinalDateInput] = useState();
@@ -304,8 +310,8 @@ const Maps: React.FC<Props> = ({
               className={classes.checkBox}
               control={
                 <Checkbox
-                  onChange={showClusterOnChange}
-                  checked={showCluster}
+                  onChange={autoctonesCaseOnChange}
+                  checked={autoctonesCase}
                 />
               }
               label={'Casos Autóctones'}

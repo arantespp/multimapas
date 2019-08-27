@@ -21,18 +21,20 @@
     }
 
     .block-line {
-      margin: 0px 0px 6px 0px;
+      margin: 0px 0px 10px 0px;
       .field {
-        font-size: 13px;
+        color: gray;
+        max-width: 50px;
+        word-wrap: break-word;
       }
       .field-value {
         margin-left: 10px;
       }
     }
 
-    .block-line:nth-child(odd) {
-      background-color: hsl(0, 0, 96%);
-    }
+    // .block-line:nth-child(odd) {
+    //   background-color: hsl(0, 0, 96%);
+    // }
   }
 
   .block:not(:last-child) {

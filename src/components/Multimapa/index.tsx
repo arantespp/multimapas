@@ -85,7 +85,7 @@ const Multimapa: React.FC = () => {
     //   longitude: -47.888052500000015
     // }
   ]);
-  const [dataDetails, setDataDetails] = useState<Data | null>(null);
+  const [dataDetails, setDataDetails] = useState<Data | null>(data[0]);
   const [numberOfMaps, setNumberOfMaps] = useState(2);
   const [mapsHeight, setMapsHeight] = useState(window.innerHeight - 60);
   const [mapsWidth, setMapsWidth] = useState(window.innerWidth / 2 - 20);
