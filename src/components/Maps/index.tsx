@@ -289,7 +289,7 @@ const Maps: React.FC<Props> = ({
         (!autoctonesCase && String(data.TPAUTOCTO) !== '1'));
 
     const isSuspect = () => {
-      return String(data.CLASSI_FIN) !== '5' || String(data.CLASSI_FIN) !== '8';
+      return String(data.CLASSI_FIN) === '5' || String(data.CLASSI_FIN) === '8';
     };
 
     // Notification Type filter
