@@ -23,7 +23,7 @@ import './styles.scss';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 
-import { months, epidemiologicalWeeksForTest, useStyles } from '../../utils';
+import { months, epidemiologicalWeeksForTest, useStyles, adlModalInfo } from '../../utils';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -733,6 +733,13 @@ const Maps: React.FC<Props> = ({
                   position,
                   map,
                   icon: adlIconMarker
+                });
+                let adlInfo = adlModalInfo(adl);
+                const infoWindow = new googleMaps.InfoWindow({
+                  content: adlInfo
+                });
+                adlMarker.addListener('click', () => {
+                  infoWindow.open(map, adlMarker);
                 });
                 return adlMarker;
               });
