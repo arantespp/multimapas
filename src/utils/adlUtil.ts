@@ -70,6 +70,11 @@ export const adlModalInfo = (adl:any) => {
                     <strong>Área: </strong>${adl.area} </br>
                     <strong>Quarteirão: </strong>${adl.quart} </br>
                     <strong>Tipo: </strong>${tipoAdl(adl.tipo)} </br>
+                    <strong>Exist: </strong>${adl.exist} </br>
+                    <strong>Com água: </strong>${adl.com_agua} </br>
+                    <strong>Com larva: </strong>${adl.com_larva} </br>
+                    <strong>Amostra: </strong>${adl.amostra} </br>
+                    <strong>Exam: </strong>${adl.exam} </br>
                     <strong>AEG: </strong>${adl.aeg} </br>
                     <strong>ALB: </strong>${adl.alb} </br>
                     <strong>CULEX: </strong>${adl.culex} </br>
