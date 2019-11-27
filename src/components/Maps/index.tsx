@@ -12,6 +12,8 @@ import ReactGoogleMapLoader from 'react-google-maps-loader';
 
 import { polygonsData } from './polygons-data';
 
+import { adlsData } from './adl-2018'
+
 import { key } from '../../key';
 
 import { Data } from '../../interfaces/data';
@@ -76,6 +78,8 @@ const blueMarker = 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png';
 const yellowMarker = 'https://maps.google.com/mapfiles/ms/icons/yellow-dot.png';
 const greenMarker = 'https://maps.google.com/mapfiles/ms/icons/green-dot.png';
 
+const adlIconMarker = 'http://maps.google.com/mapfiles/ms/micons/pink-pushpin.png'
+
 const Maps: React.FC<Props> = ({
   data,
   showClusterDefault = true,
@@ -91,6 +95,10 @@ const Maps: React.FC<Props> = ({
   let markers: google.maps.Marker[] = [];
   let markerClusterer: typeof MarkerClusterer;
   const polygons = useRef<Array<{ polygon: google.maps.Polygon; id: string }>>(
+    []
+  );
+
+  const adls = useRef<Array<google.maps.Marker>> (
     []
   );
 
@@ -712,6 +720,21 @@ const Maps: React.FC<Props> = ({
                   infoWindow.open(map);
                 });
                 return { id, polygon };
+              });
+            }
+
+            if (map && adls.current.length === 0) {
+              adls.current = adlsData.map(adl => {
+                const position = new googleMaps.LatLng(
+                  Number(adl.lat),
+                  Number(adl.long)
+                );
+                const adlMarker = new googleMaps.Marker({
+                  position,
+                  map,
+                  icon: adlIconMarker
+                });
+                return adlMarker;
               });
             }
 
