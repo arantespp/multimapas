@@ -734,7 +734,7 @@ const Maps: React.FC<Props> = ({
                   map,
                   icon: adlIconMarker
                 });
-                let adlInfo = adlModalInfo(adl);
+                const adlInfo = adlModalInfo(adl);
                 const infoWindow = new googleMaps.InfoWindow({
                   content: adlInfo
                 });
