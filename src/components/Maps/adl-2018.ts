@@ -1464,8 +1464,8 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
-    "lat": -22.0114888,
-    "long": -47.89076439999999
+    "lat": -21.895491,
+    "long": -47.891383
   },
   {
     "id": 77,
