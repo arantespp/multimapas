@@ -185,14 +185,14 @@ const Maps: React.FC<Props> = ({
   //Estados dos selects das ADLs
   const [initialAdl, setInitialAdl] = useState();
   const [finalAdl, setFinalAdl] = useState();
-  const [finalAdlList, setfinalAdlList] = useState(adlList);
+  const [finalAdlList, setFinalAdlList] = useState(adlList);
 
   useEffect(() => {
+    setFinalAdl(undefined);
     const newFinalAdlList = adlList.filter(
       item => item.value > initialAdl
     );
-    console.log(newFinalAdlList)
-    setfinalAdlList(newFinalAdlList);
+    setFinalAdlList(newFinalAdlList);
   }, [initialAdl]);
 
   const markerColor = (data: Data) => {
