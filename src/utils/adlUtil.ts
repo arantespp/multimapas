@@ -1,5 +1,6 @@
+import { Adl } from '../interfaces/adl'
 
-export const tipoAdl = (tipo: number) => {
+const tipoAdl = (tipo: number) => {
     switch (tipo) {
         case 5:
             return 'Vaso de planta com água'
@@ -62,7 +63,7 @@ export const tipoAdl = (tipo: number) => {
     }
 };
 
-export const adlModalInfo = (adl:any) => {
+export const adlModalInfo = (adl:Adl) => {
     return `<div id="content">
                 <h3>Detalhes ADL</h3>
                 <p>
@@ -83,3 +84,10 @@ export const adlModalInfo = (adl:any) => {
                 </p>
             </div>`;
 }
+
+export const adlList = [
+    {value: "1", label: "Fevereiro"},
+    {value: "2", label: "Maio"},
+    {value: "3", label: "Julho"},
+    {value: "4", label: "Outubro"}
+]

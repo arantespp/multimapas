@@ -12,8 +12,6 @@ import ReactGoogleMapLoader from 'react-google-maps-loader';
 
 import { polygonsData } from './polygons-data';
 
-import { adlsData } from './adl-2018'
-
 import { key } from '../../key';
 
 import { Data } from '../../interfaces/data';
@@ -23,7 +21,10 @@ import './styles.scss';
 import moment from 'moment';
 import 'moment/locale/pt-br';
 
-import { months, epidemiologicalWeeksForTest, useStyles, adlModalInfo } from '../../utils';
+import { months, epidemiologicalWeeksForTest, useStyles, adlModalInfo, adlList } from '../../utils';
+
+import { adlsData } from './adl-2018';
+import { Adl } from '../../interfaces/adl';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -98,9 +99,7 @@ const Maps: React.FC<Props> = ({
     []
   );
 
-  const adls = useRef<Array<google.maps.Marker>> (
-    []
-  );
+  let adls: google.maps.Marker[] = [];
 
   const [notificationsFilter, setNotificationsFilter] = useState<
     NotificationsFilter
@@ -119,6 +118,7 @@ const Maps: React.FC<Props> = ({
   useEffect(() => {
     return () => {
       markers.forEach(marker => marker.setMap(null));
+      adls.forEach(aldMarker => aldMarker.setMap(null));
       if (!!markerClusterer) {
         markerClusterer.clearMarkers();
       }
@@ -144,7 +144,7 @@ const Maps: React.FC<Props> = ({
   const [finalMonth, setFinalMonth] = useState();
   const [finalMonths, setFinalMonths] = useState(months);
 
-  //Estados das selects das semanas epidemiologicas
+  //Estados dos selects das semanas epidemiologicas
   const [initialEpiWeek, setInitialEpiWeek] = useState();
   const [finalEpiWeek, setFinalEpiWeek] = useState();
   const [epidemiologicalWeeksFinal, setEpidemiologicalWeeksFinal] = useState(
@@ -182,6 +182,19 @@ const Maps: React.FC<Props> = ({
     setEpidemiologicalWeeksFinal(newEpiWeeksFinal);
   }, [initialEpiWeek]);
 
+  //Estados dos selects das ADLs
+  const [initialAdl, setInitialAdl] = useState();
+  const [finalAdl, setFinalAdl] = useState();
+  const [finalAdlList, setfinalAdlList] = useState(adlList);
+
+  useEffect(() => {
+    const newFinalAdlList = adlList.filter(
+      item => item.value > initialAdl
+    );
+    console.log(newFinalAdlList)
+    setfinalAdlList(newFinalAdlList);
+  }, [initialAdl]);
+
   const markerColor = (data: Data) => {
     // if (!filters.isPositive.filter(data, 0)) {
     //   return blueMarker;
@@ -196,7 +209,6 @@ const Maps: React.FC<Props> = ({
   };
 
   /* Metodo utilizado para realizar a logica do filtro envolvendo datas. */
-  //TODO: verificar o date range para a data (igual as datas dos sites de passagens aereas)
   const datesFiltered = (): Array<Data> => {
     if (initialDateInput) {
       if (finalDateInput) {
@@ -286,6 +298,20 @@ const Maps: React.FC<Props> = ({
 
     return data;
   };
+
+  const adlFilter = (adl: Adl) => {
+    
+    let result = true;
+
+    if (initialAdl) {
+      if (finalAdl) {
+        result = result && adl.coleta >= initialAdl && adl.coleta <= finalAdl;
+      } else {
+        result = result && adl.coleta >= initialAdl;
+      }
+    }
+    return result;
+  }
 
   const filters = (data: Data) => {
     let f = true;
@@ -672,7 +698,62 @@ const Maps: React.FC<Props> = ({
                 defaultValue={filterByAge}
                 // ref={filterByAgeRef}
               />
-            </FormControl> */}
+            </FormControl> */
+            }
+            {
+              <div>
+                <form className={classes.root} autoComplete="off" noValidate>
+                  <FormControl className={classes.formControlSelect}>
+                    <InputLabel htmlFor="ADL Inicial">
+                      ADL Inicial
+                    </InputLabel>
+                    <Select
+                      value={initialAdl}
+                      onChange={e => setInitialAdl(e.target.value)}
+                      inputProps={{
+                        name: 'initialAdl',
+                        id: 'initial-adl'
+                      }}
+                    >
+                      {adlList.map(item => {
+                        return (
+                          <MenuItem
+                            key={`initial-adl-${item.value}`}
+                            value={item.value}
+                          >
+                            {item.label}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                  <FormControl className={classes.formControlSelect}>
+                    <InputLabel htmlFor="ADL Final">
+                      ADL Final
+                    </InputLabel>
+                    <Select
+                      value={finalAdl}
+                      onChange={e => setFinalAdl(e.target.value)}
+                      inputProps={{
+                        name: 'finalAdl',
+                        id: 'final-adl'
+                      }}
+                    >
+                      {finalAdlList.map(item => {
+                        return (
+                          <MenuItem
+                            key={`final-ald-${item.value}`}
+                            value={item.value}
+                          >
+                            {item.label}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </form>
+              </div>
+            }
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
@@ -723,27 +804,26 @@ const Maps: React.FC<Props> = ({
               });
             }
 
-            if (map && adls.current.length === 0) {
-              adls.current = adlsData.map(adl => {
-                const position = new googleMaps.LatLng(
-                  Number(adl.lat),
-                  Number(adl.long)
-                );
-                const adlMarker = new googleMaps.Marker({
-                  position,
-                  map,
-                  icon: adlIconMarker
-                });
-                const adlInfo = adlModalInfo(adl);
-                const infoWindow = new googleMaps.InfoWindow({
-                  content: adlInfo
-                });
-                adlMarker.addListener('click', () => {
-                  infoWindow.open(map, adlMarker);
-                });
-                return adlMarker;
+            adls = adlsData.filter(adlFilter).map(adl => {
+              const position = new googleMaps.LatLng(
+                Number(adl.lat),
+                Number(adl.long)
+              );
+              const adlMarker = new googleMaps.Marker({
+                position,
+                map,
+                icon: adlIconMarker
               });
-            }
+              const adlInfo = adlModalInfo(adl);
+              const infoWindow = new googleMaps.InfoWindow({
+                content: adlInfo
+              });
+              adlMarker.addListener('click', () => {
+                infoWindow.open(map, adlMarker);
+              });
+              return adlMarker;
+            });
+            
 
             markers = datesFiltered()
               .filter(filters)

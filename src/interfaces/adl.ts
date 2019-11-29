@@ -1,0 +1,20 @@
+export interface Adl {
+    id: number,
+    endereco_completo: string, 
+    area: number, 
+    quart: number,
+    tipo: number, 
+    exist: number, 
+    com_agua: number, 
+    com_larva: number, 
+    amostra: number,
+    exam: number, 
+    aeg: number, 
+    alb: number, 
+    pupa: number, 
+    culex: number, 
+    mes_ano: string,
+    coleta: number,
+    lat: number, 
+    long: number 
+}

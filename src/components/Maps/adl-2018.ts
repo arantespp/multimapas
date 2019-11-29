@@ -1,8 +1,6 @@
-export const adlsData: Array<{id: number, endereco_completo: string, area: number, quart: number,
-  tipo: number, exist: number, com_agua: number, com_larva: number, amostra: number,
-  exam: number, aeg: number, alb: number, pupa: number, culex: number, mes_ano: string,
-  lat: number, long: number, 
-}> =
+import { Adl } from '../../interfaces/adl';
+
+export const adlsData: Array<Adl> =
 [
   {
     "id": 0,
@@ -20,6 +18,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.9805375,
     "long": -47.8967284
   },
@@ -39,6 +38,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.9805375,
     "long": -47.8967284
   },
@@ -58,6 +58,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.9818935,
     "long": -47.8971682
   },
@@ -77,6 +78,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.9943104,
     "long": -47.89809169999999
   },
@@ -96,6 +98,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.9968151,
     "long": -47.8927077
   },
@@ -115,6 +118,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.9976767,
     "long": -47.9220131
   },
@@ -134,6 +138,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0106761,
     "long": -47.900588
   },
@@ -153,6 +158,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0106272,
     "long": -47.900278
   },
@@ -172,6 +178,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0080378,
     "long": -47.8871452
   },
@@ -191,6 +198,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0060275,
     "long": -47.8838631
   },
@@ -210,6 +218,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0060275,
     "long": -47.8838631
   },
@@ -229,6 +238,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0159969,
     "long": -47.8778667
   },
@@ -248,6 +258,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0173037,
     "long": -47.8488158
   },
@@ -267,6 +278,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0042599,
     "long": -47.8539961
   },
@@ -286,6 +298,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0249613,
     "long": -47.8788661
   },
@@ -305,6 +318,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0263416,
     "long": -47.8674137
   },
@@ -324,6 +338,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0310353,
     "long": -47.8662667
   },
@@ -343,6 +358,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0310448,
     "long": -47.8853693
   },
@@ -362,6 +378,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0271079,
     "long": -47.8901778
   },
@@ -381,6 +398,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0357844,
     "long": -47.880036
   },
@@ -400,6 +418,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0378595,
     "long": -47.8652293
   },
@@ -419,6 +438,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0378522,
     "long": -47.8646737
   },
@@ -438,6 +458,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.029131,
     "long": -47.8949934
   },
@@ -457,6 +478,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0413727,
     "long": -47.9072524
   },
@@ -476,6 +498,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0408307,
     "long": -47.9030731
   },
@@ -495,6 +518,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0410686,
     "long": -47.90335719999999
   },
@@ -514,6 +538,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.065051,
     "long": -47.9003253
   },
@@ -533,6 +558,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0618632,
     "long": -47.9058347
   },
@@ -552,6 +578,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0595188,
     "long": -47.9032925
   },
@@ -571,6 +598,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0539218,
     "long": -47.9017953
   },
@@ -590,6 +618,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0546526,
     "long": -47.9065551
   },
@@ -609,6 +638,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0535897,
     "long": -47.9059958
   },
@@ -628,6 +658,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0528117,
     "long": -47.9038472
   },
@@ -647,6 +678,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0588285,
     "long": -47.9157489
   },
@@ -666,6 +698,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0161397,
     "long": -47.85023169999999
   },
@@ -685,6 +718,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 2,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -22.0158364,
     "long": -47.850205
   },
@@ -704,6 +738,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "fev/18",
+    "coleta": 1,
     "lat": -21.7673275,
     "long": -47.7941171
   },
@@ -723,6 +758,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0154594,
     "long": -47.8700431
   },
@@ -742,6 +778,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -21.9978163,
     "long": -47.85662989999999
   },
@@ -761,6 +798,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0276606,
     "long": -47.8676211
   },
@@ -780,6 +818,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0287858,
     "long": -47.886528
   },
@@ -799,6 +838,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0287858,
     "long": -47.886528
   },
@@ -818,6 +858,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0287858,
     "long": -47.886528
   },
@@ -837,6 +878,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0280465,
     "long": -47.8883983
   },
@@ -856,6 +898,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0280465,
     "long": -47.8883983
   },
@@ -875,6 +918,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0280465,
     "long": -47.8883983
   },
@@ -894,6 +938,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0337937,
     "long": -47.8835829
   },
@@ -913,6 +958,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0224473,
     "long": -47.89078079999999
   },
@@ -932,6 +978,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0400868,
     "long": -47.905945
   },
@@ -951,6 +998,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0587455,
     "long": -47.9024128
   },
@@ -970,6 +1018,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0569678,
     "long": -47.9039847
   },
@@ -989,6 +1038,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "mai/18",
+    "coleta": 2,
     "lat": -22.0576358,
     "long": -47.9025541
   },
@@ -1008,6 +1058,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0258793,
     "long": -47.8861918
   },
@@ -1027,6 +1078,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0238781,
     "long": -47.8874948
   },
@@ -1046,6 +1098,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 4,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0317474,
     "long": -47.8808521
   },
@@ -1065,6 +1118,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0271163,
     "long": -47.875409
   },
@@ -1084,6 +1138,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0169119,
     "long": -47.9059213
   },
@@ -1103,6 +1158,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0618326,
     "long": -47.9003782
   },
@@ -1122,6 +1178,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.053945,
     "long": -47.9205192
   },
@@ -1141,6 +1198,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0081202,
     "long": -47.8708247
   },
@@ -1160,6 +1218,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0318001,
     "long": -47.8612769
   },
@@ -1179,6 +1238,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.0291264,
     "long": -47.8805935
   },
@@ -1198,6 +1258,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "jul/18",
+    "coleta": 3,
     "lat": -22.055103,
     "long": -47.9176398
   },
@@ -1217,6 +1278,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0131481,
     "long": -47.8913942
   },
@@ -1236,6 +1298,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0131481,
     "long": -47.8913942
   },
@@ -1255,6 +1318,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 5,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0026036,
     "long": -47.8942721
   },
@@ -1274,6 +1338,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 4,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -21.9985961,
     "long": -47.89650109999999
   },
@@ -1293,6 +1358,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 6,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -21.9999281,
     "long": -47.9226751
   },
@@ -1312,6 +1378,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 5,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -21.9999281,
     "long": -47.9226751
   },
@@ -1331,6 +1398,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0133491,
     "long": -47.88430719999999
   },
@@ -1350,6 +1418,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0132553,
     "long": -47.8803488
   },
@@ -1369,6 +1438,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 3,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0093684,
     "long": -47.8865557
   },
@@ -1388,6 +1458,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0093684,
     "long": -47.8865557
   },
@@ -1407,6 +1478,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0297005,
     "long": -47.88657
   },
@@ -1426,6 +1498,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 2,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0271751,
     "long": -47.8982219
   },
@@ -1445,12 +1518,13 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0376948,
     "long": -47.8897783
   },
   {
     "id": 76,
-    "endereco_completo": "Rua do Ype, 36, Sao Carlos - SP",
+    "endereco_completo": "Rua do Ipê, 36, Sao Carlos - SP",
     "area": 6,
     "quart": 3176,
     "tipo": 7,
@@ -1464,6 +1538,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -21.895491,
     "long": -47.891383
   },
@@ -1483,6 +1558,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0549257,
     "long": -47.9071172
   },
@@ -1502,6 +1578,7 @@ export const adlsData: Array<{id: number, endereco_completo: string, area: numbe
     "pupa": 0,
     "culex": 0,
     "mes_ano": "out/18",
+    "coleta": 4,
     "lat": -22.0573513,
     "long": -47.9182496
   }
