@@ -29,7 +29,7 @@
     "typeface-roboto": "0.0.75",
     "typescript": "3.4.5",
     "utf8": "^3.0.0",
-    "xlsx": "^0.14.3",
+    "xlsx": "^0.17.0",
     "xml-js": "^1.6.11"
   },
   "scripts": {
